@@ -1,0 +1,46 @@
+package akayerov.fillsnils;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import akayerov.fillsnils.dao.SnilsDAO;
+import akayerov.fillsnils.models.ReaderSnils;
+import akayerov.fillsnils.models.ReaderSnilsImpl;
+import akayerov.fillsnils.models.Snils;
+
+
+
+public class Program {
+
+    private static final Logger logger = Logger.getLogger(Program.class);
+
+    public static void main(String[] args) {
+
+    	ReaderSnils rd = new ReaderSnilsImpl();
+    	rd.SetPath("C:\\temp\\SNILS.txt");
+        logger.info("Список СНИЛС из файла:");
+        logger.info(rd.getNextSnils());
+    	
+/*
+    	ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/beans.xml");
+		SnilsDAO snils = (SnilsDAO) context.getBean("storageSnils");
+        
+		Snils s = snils.getById("SNILS5555");
+        if( s == null) {
+		  s.setSnils("SNILS5555");
+          s.setOgrn("33333333");
+		
+          snils.save(s);
+        }  
+		
+		
+        logger.info("Список всех СНИЛС:");
+		for (Snils p : snils.list()) {
+			logger.info(p);
+		}
+*/
+    }
+
+
+}

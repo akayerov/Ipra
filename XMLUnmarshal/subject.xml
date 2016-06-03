@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tIPRA xmlns:ct="http://tempuri.org/eaviias/commontypes" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" Version="1.3" xmlns="http://rosmintrud.ru/mse/eaviias/ipr/151201">
+  <Id>00b23cbe-59f0-42c5-bad7-dd46cf43faa5</Id>
+  <Buro>
+    <ct:ShortName>Бюро №20-филиал ФКУ "ГБ МСЭ по Ярославской области"</ct:ShortName>
+    <ct:FullName>Бюро №20-филиал ФКУ "ГБ МСЭ по Ярославской области"</ct:FullName>
+    <ct:Number>20</ct:Number>
+    <ct:OrgName>Бюро №20-филиал ФКУ "ГБ МСЭ по Ярославской области"</ct:OrgName>
+  </Buro>
+  <Recipient>
+    <Name>Департамент здравоохранения и фармации Ярославской области</Name>
+    <Address>150000, Ярославская обл, Ярославль г, Советская ул, д. 11/9</Address>
+    <RecipientType>
+      <ct:Id>1</ct:Id>
+      <ct:Value>ОИВ субъекта РФ в сфере охраны здоровья</ct:Value>
+    </RecipientType>
+  </Recipient>
+  <Number>454.20.76/2016</Number>
+  <ProtocolNum>483.20.76/2016</ProtocolNum>
+  <ProtocolDate>2016-04-06</ProtocolDate>
+  <IsForChild>false</IsForChild>
+  <Person>
+    <Id>14dd0899-5cdf-481a-8016-1bb6c90bc548</Id>
+    <FIO>
+      <ct:LastName>Большакова</ct:LastName>
+      <ct:FirstName>Людмила</ct:FirstName>
+      <ct:SecondName>Васильевна</ct:SecondName>
+    </FIO>
+    <Age>
+      <ct:Years>77</ct:Years>
+    </Age>
+    <Citizenship>
+      <ct:Id>1</ct:Id>
+      <ct:Value>гражданин Российской Федерации</ct:Value>
+    </Citizenship>
+    <SNILS>108-716-403 50</SNILS>
+    <BirthDate>1938-04-09</BirthDate>
+    <LivingAddress>
+      <Type>
+        <ct:Id>1</ct:Id>
+        <ct:Value>Адрес места жительства</ct:Value>
+      </Type>
+      <Value>150048, Ярославская обл, Ярославль г, Слепнева ул, д. 28а, кв. 54</Value>
+      <Fields>
+        <ZipCode>150048</ZipCode>
+        <Country>Российская Федерация</Country>
+        <TerritorySubjectID>76</TerritorySubjectID>
+        <TerritorySubjectName>Ярославская обл</TerritorySubjectName>
+        <TerritorySubjectGuid>a84b2ef4-db03-474b-b552-6229e801ae9b</TerritorySubjectGuid>
+        <District />
+        <DistrictGuid />
+        <PlaceTypeId>1</PlaceTypeId>
+        <PlaceTypeName>город</PlaceTypeName>
+        <PlaceKindId>1</PlaceKindId>
+        <PlaceKindName>Городское поселение</PlaceKindName>
+        <Place>Ярославль г</Place>
+        <PlaceGuid>6b1bab7d-ee45-4168-a2a6-4ce2880d90d3</PlaceGuid>
+        <CityDistrict />
+        <Street>Слепнева ул</Street>
+        <StreetGuid>66fe9207-c351-444c-be90-4a648c166153</StreetGuid>
+        <House>28а</House>
+        <HouseGuid>f4f5f8c9-1f56-4be6-a2be-d63a3e87e5a1</HouseGuid>
+        <Corpus />
+        <Building />
+        <Appartment>54</Appartment>
+      </Fields>
+    </LivingAddress>
+    <HasNoLivingAddress>false</HasNoLivingAddress>
+    <RegAddress xsd:nil="true" />
+    <HasNoRegAddress>false</HasNoRegAddress>
+    <Phones>
+      <Phone>449402</Phone>
+    </Phones>
+    <Email />
+    <IdentityDoc>
+      <ct:Title>Паспорт гражданина России</ct:Title>
+      <ct:Series>7801</ct:Series>
+      <ct:Number>487049</ct:Number>
+      <ct:Issuer>Фрунзенским РОВД гор.Ярославля</ct:Issuer>
+      <ct:IssueDate>2002-03-01</ct:IssueDate>
+    </IdentityDoc>
+    <IsMale>false</IsMale>
+  </Person>
+  <Representative xsd:nil="true" />
+  <LifeRestrictions>
+    <SelfCare>4</SelfCare>
+    <Moving>4</Moving>
+    <Orientation>4</Orientation>
+    <Communication>4</Communication>
+    <Learn>0</Learn>
+    <Work>2</Work>
+    <BehaviorControl>4</BehaviorControl>
+  </LifeRestrictions>
+  <IsFirst>false</IsFirst>
+  <EndDate>2017-04-01</EndDate>
+  <IssueDate>2016-04-06</IssueDate>
+  <MedSection>
+    <EventGroups>
+      <Group>
+        <GroupType>
+          <ct:Id>34</ct:Id>
+          <ct:Value>Медицинская реабилитация</ct:Value>
+        </GroupType>
+        <Need>true</Need>
+        <PeriodFrom>2016-03-30</PeriodFrom>
+        <PeriodTo>2017-04-01</PeriodTo>
+        <Executor>Департамент здравоохранения и фармации Ярославской области</Executor>
+      </Group>
+    </EventGroups>
+    <PrognozResult>
+      <FuncRecovery>
+        <ct:Id>2</ct:Id>
+        <ct:Value>частично</ct:Value>
+      </FuncRecovery>
+      <FuncCompensation>
+        <ct:Id>2</ct:Id>
+        <ct:Value>частично</ct:Value>
+      </FuncCompensation>
+    </PrognozResult>
+    <SenderMedOrgName>ГБУЗ ЯО "Клиническая больница №8"пол-ка №2</SenderMedOrgName>
+  </MedSection>
+  <RequiredHelp>
+    <HelpItems>
+      <HelpItem>
+        <HelpCategory>
+          <ct:Id>52</ct:Id>
+          <ct:Value>Обеспечение допуска на объекты социальной, инженерной и транспортной инфраструктур, в которых предоставляются услуги, собаки-проводника при наличии документа, подтверждающего ее специальное обучение в соответствии с законодательством Российской Федерации</ct:Value>
+        </HelpCategory>
+        <Need>false</Need>
+      </HelpItem>
+      <HelpItem>
+        <HelpCategory>
+          <ct:Id>51</ct:Id>
+          <ct:Value>Сопровождение инвалида, имеющего стойкие расстройства функции зрения и самостоятельного передвижения, и оказание ему помощи на объектах социальной, инженерной и транспортной инфраструктур</ct:Value>
+        </HelpCategory>
+        <Need>false</Need>
+      </HelpItem>
+      <HelpItem>
+        <HelpCategory>
+          <ct:Id>54</ct:Id>
+          <ct:Value>Оказание необходимой помощи инвалиду в доступной для него форме в уяснении порядка предоставления и получения услуги, в оформлении документов, в совершении им других необходимых для получения услуги действий</ct:Value>
+        </HelpCategory>
+        <Need>false</Need>
+      </HelpItem>
+      <HelpItem>
+        <HelpCategory>
+          <ct:Id>50</ct:Id>
+          <ct:Value>Помощь инвалиду, передвигающемуся в кресле-коляске, на объектах социальной, инженерной и транспортной инфраструктур, при входе в такие объекты и выходе из них, посадке в транспортное средство и высадке из него, в том числе с использованием кресла-коляски</ct:Value>
+        </HelpCategory>
+        <Need>false</Need>
+      </HelpItem>
+      <HelpItem>
+        <HelpCategory>
+          <ct:Id>53</ct:Id>
+          <ct:Value>Предоставление инвалидам по слуху при необходимости услуги с использованием русского жестового языка, включая обеспечение допуска сурдопереводчика, тифлосурдопереводчика</ct:Value>
+        </HelpCategory>
+        <Need>false</Need>
+      </HelpItem>
+    </HelpItems>
+    <OtherHelp />
+  </RequiredHelp>
+  <IsAgreed>true</IsAgreed>
+  <IsRepresentativeSign>false</IsRepresentativeSign>
+  <FIOHead>
+    <ct:LastName>И</ct:LastName>
+    <ct:FirstName>В</ct:FirstName>
+    <ct:SecondName>Посысоева</ct:SecondName>
+  </FIOHead>
+  <DevelopDate>2016-04-06</DevelopDate>
+</tIPRA>

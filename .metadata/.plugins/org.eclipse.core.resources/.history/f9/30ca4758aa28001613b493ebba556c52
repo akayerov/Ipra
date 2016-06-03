@@ -1,0 +1,41 @@
+package akayerov.fillsnils;
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+import javax.xml.transform.stream.StreamSource;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+@Repository
+@Service("folderSnils")
+public class FolderSnilsImpl implements FolderSnils {
+	File folder;
+	private File[] fList;
+	private int idx;
+	public FolderSnilsImpl() {
+    	
+    }
+	@Override
+	public String getNextFile() {
+      if(idx < fList.length) {
+    	  if(fList[idx].isFile()) 
+    		  return fList[idx++].getAbsolutePath();
+    	  idx++;
+      }
+	  return null;
+	}
+
+	@Override
+	public File SetPath(String path) {
+	  folder = new File(path);
+      fList = folder.listFiles();
+      idx = 0;
+      return folder;
+	}
+
+}

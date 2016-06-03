@@ -1,0 +1,28 @@
+package akayerov.fillsnils.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import akayerov.fillsnils.dao.MediaDao;
+import akayerov.fillsnils.models.Content;
+
+import java.util.List;
+
+@Service("storageService")
+public class MediaServiceImpl implements MediaService {
+
+    @Autowired
+    private MediaDao dao;
+
+    @Transactional
+    @Override
+    public void save(Content content) {
+        dao.save(content);
+    }
+
+    @Override
+    public List<Content> getAll() {
+        return dao.getAll();
+    }
+}

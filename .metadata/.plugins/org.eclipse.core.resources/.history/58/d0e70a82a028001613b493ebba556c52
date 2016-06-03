@@ -1,0 +1,6 @@
+package akayerov.fillsnils.models;
+
+public interface ReaderSnils {
+	public String getNextSnils();
+	public int SetPath(String path);
+}

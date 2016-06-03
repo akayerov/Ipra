@@ -1,0 +1,71 @@
+package akayerov.fillsnils;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import akayerov.fillsnils.dao.SnilsDAO;
+import akayerov.fillsnils.models.Snils;
+
+
+
+public class Program {
+
+    private static final Logger logger = Logger.getLogger(Program.class);
+
+    public static void main(String[] args) {
+       if(args.length < 1) {
+           logger.error("Usage: java fillsnils <path with snils file>");
+           return;
+       }
+    	
+    	ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/beans.xml");
+		SnilsDAO snils = (SnilsDAO) context.getBean("storageSnils");
+    	ReaderSnils rd = (ReaderSnils) context.getBean("readerSnils"); 
+    	FolderSnils folder = (FolderSnils) context.getBean("folderSnils"); 
+    	
+    	folder.SetPath(args[0]);
+        String fileName = folder.getNextFile();
+        
+    	while(fileName != null) {
+	     	rd.SetPath(fileName);
+	        logger.info("Список СНИЛС из файла:");
+	        String s;
+	
+	        s = rd.getNextSnils();
+	        while(s != "") {
+	          logger.info(s);
+ 	  		  Snils sn = snils.getById(s);
+	          if( sn == null) {
+			  sn.setSnils(s);
+	          sn.setOgrn("33333333");
+	          snils.save(sn);
+	        }  
+
+	          
+	          s = rd.getNextSnils();
+	        }
+	        fileName  = folder.getNextFile();
+    	}      	
+/*
+    	ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/beans.xml");
+        
+		
+		
+        logger.info("Список всех СНИЛС:");
+		for (Snils p : snils.list()) {
+			logger.info(p);
+		}
+*/
+    }
+
+    public class SnilsFile {
+    	String fullpath;
+    	String ogrn;
+    	public SnilsFile(String fullpath, String ogrn) {
+    		this.fullpath = fullpath;
+    		this.ogrn = ogrn;
+    	}
+    }
+
+}
