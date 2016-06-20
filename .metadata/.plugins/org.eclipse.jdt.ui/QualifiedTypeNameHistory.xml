@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.nio.file.Path"/>
+<fullyQualifiedTypeName name="java.nio.file.FileSystems"/>
+<fullyQualifiedTypeName name="java.nio.file.StandardCopyOption"/>
+<fullyQualifiedTypeName name="akayerov.fillsnils.dao.MoDAO"/>
+<fullyQualifiedTypeName name="org.hibernate.Query"/>
+<fullyQualifiedTypeName name="javax.persistence.Query"/>
+<fullyQualifiedTypeName name="akayerov.fillsnils.models.Mo"/>
+</qualifiedTypeNameHistroy>

@@ -1,8 +1,0 @@
-package akayerov.fillsnils;
-
-import java.io.File;
-
-public interface FolderSnils {
-	public String getNextFile();
-	public File SetPath(String path);
-}
