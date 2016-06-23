@@ -7,4 +7,5 @@
 <fullyQualifiedTypeName name="org.hibernate.Query"/>
 <fullyQualifiedTypeName name="javax.persistence.Query"/>
 <fullyQualifiedTypeName name="akayerov.fillsnils.models.Mo"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.Program"/>
 </qualifiedTypeNameHistroy>
