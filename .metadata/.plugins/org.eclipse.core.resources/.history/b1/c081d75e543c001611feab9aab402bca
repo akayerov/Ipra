@@ -168,11 +168,6 @@ public class Program {
 
 	private static String constructNameFolder(String sDaseDir, String sMo) {
         if(sMo != null) {
-           sMo = sMo.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
-           sMo = sMo.replace("УЧРЕЖДЕНИЕ", "");
-           sMo = sMo.replace("ЯРОСЛАВСКОЙ", "");
-           sMo = sMo.replace("ОБЛАСТИ", "");
-           sMo = sMo.replace("ЗДРАВООХРАНЕНИЯ", "");
            sMo = sMo.replace('\\', ' ');
            sMo = sMo.replace('/', ' ');
            sMo = sMo.replace('.', ' '); 
@@ -180,7 +175,6 @@ public class Program {
            sMo = sMo.replace(',', ' ');
            sMo = sMo.replace(':', ' ');
            sMo = sMo.trim();
-           
            return  sDaseDir + "\\" + sMo;  
         }  
 		return null;

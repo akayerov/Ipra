@@ -39,6 +39,7 @@ public class FolderSnilsImpl implements FolderSnils {
             }
             else if( mode == Program.MODE_MSE ) {
             	 // тестировать имя выписки
+				sogrn="0";
 				int pos_end   = sogrn.lastIndexOf(".", sogrn.length());
 				String type = sogrn.substring(pos_end+1).toUpperCase();
 				if(!type.equals("XML")) {

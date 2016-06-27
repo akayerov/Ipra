@@ -172,7 +172,7 @@ public class Program {
            sMo = sMo.replace("УЧРЕЖДЕНИЕ", "");
            sMo = sMo.replace("ЯРОСЛАВСКОЙ", "");
            sMo = sMo.replace("ОБЛАСТИ", "");
-           sMo = sMo.replace("ЗДРАВООХРАНЕНИЯ", "");
+           sMo = sMo.toLowerCase().replace("ЗДРАВООХРАНЕНИЯ", "");
            sMo = sMo.replace('\\', ' ');
            sMo = sMo.replace('/', ' ');
            sMo = sMo.replace('.', ' '); 

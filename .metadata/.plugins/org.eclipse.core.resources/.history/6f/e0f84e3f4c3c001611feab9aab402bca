@@ -90,12 +90,12 @@ public class Program {
 
 		while (fileNameObj != null) {
 
+			fileNameObj = folder.getNextFile(mode);
 			if( mode == MODE_SNILS) {
 				GetSnilsFunction(fileNameObj, rd, mo, sDirComlete, sDirError, snils);
 			}	
 			else if (mode == MODE_MSE) 
 			    MSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils);
-			fileNameObj = folder.getNextFile(mode);
 		}
 
 		/*
@@ -142,9 +142,6 @@ public class Program {
     				} else {
     					logger.info("ОГРН:" +sn.getOgrn() + ":"
     							+ m.getName().trim());
-    					String nameFolder = constructNameFolder(sDirComlete, m.getName().trim());
-    					logger.info("Перемещаем докумен в папку:" + nameFolder);
-    					
     				}	
                 	
                 }
@@ -165,27 +162,6 @@ public class Program {
 
 		
 	}
-
-	private static String constructNameFolder(String sDaseDir, String sMo) {
-        if(sMo != null) {
-           sMo = sMo.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
-           sMo = sMo.replace("УЧРЕЖДЕНИЕ", "");
-           sMo = sMo.replace("ЯРОСЛАВСКОЙ", "");
-           sMo = sMo.replace("ОБЛАСТИ", "");
-           sMo = sMo.replace("ЗДРАВООХРАНЕНИЯ", "");
-           sMo = sMo.replace('\\', ' ');
-           sMo = sMo.replace('/', ' ');
-           sMo = sMo.replace('.', ' '); 
-           sMo = sMo.replace('"', ' '); 
-           sMo = sMo.replace(',', ' ');
-           sMo = sMo.replace(':', ' ');
-           sMo = sMo.trim();
-           
-           return  sDaseDir + "\\" + sMo;  
-        }  
-		return null;
-	}
-
 
 	private static String getSnils(String fullpath) throws ParserConfigurationException, SAXException, IOException {
 	   File f = new File(fullpath);

@@ -90,12 +90,12 @@ public class Program {
 
 		while (fileNameObj != null) {
 
+			fileNameObj = folder.getNextFile(mode);
 			if( mode == MODE_SNILS) {
 				GetSnilsFunction(fileNameObj, rd, mo, sDirComlete, sDirError, snils);
 			}	
 			else if (mode == MODE_MSE) 
 			    MSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils);
-			fileNameObj = folder.getNextFile(mode);
 		}
 
 		/*
@@ -130,30 +130,14 @@ public class Program {
 				e.printStackTrace();
 			}
 			if(!sSnils.isEmpty()) {
-				logger.info("Найден СНИЛС в файле ИПРА:" + sSnils);
-				// СНИЛС  в базе есть?  Если есть -  тогда файла перемещаем в папку для соотвествующей организации
-				// и последующей отправки в МО
-                Snils sn = snils.getById(sSnils);
-                if(sn != null) {
-    				logger.info("Найден СНИЛС в базе данных:" + sSnils);
-    				Mo m = mo.getByOgrn(sn.getOgrn());
-    				if (m == null) {
-    					logger.error("ОГРН отсуствует в списке МО:" + sn.getOgrn());
-    				} else {
-    					logger.info("ОГРН:" +sn.getOgrn() + ":"
-    							+ m.getName().trim());
-    					String nameFolder = constructNameFolder(sDirComlete, m.getName().trim());
-    					logger.info("Перемещаем докумен в папку:" + nameFolder);
-    					
-    				}	
-                	
-                }
-				
+				logger.info("Найден СНИЛС:" + sSnils);
 				
 			}
 			else {
-				logger.info("НЕ Найден СНИЛС в файле ИПРА:" + sSnils);
+				logger.info("НЕ Найден СНИЛС:" + sSnils);
 			}
+			// СНИЛС  вбазе есть?  Если есть -  тогда файла перемещаем в папку для соотвествующей организации
+			// и последующей отправки
 			
 //			Move(fileNameObj.fullpath, sDirComlete);
 		} else {
@@ -165,27 +149,6 @@ public class Program {
 
 		
 	}
-
-	private static String constructNameFolder(String sDaseDir, String sMo) {
-        if(sMo != null) {
-           sMo = sMo.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
-           sMo = sMo.replace("УЧРЕЖДЕНИЕ", "");
-           sMo = sMo.replace("ЯРОСЛАВСКОЙ", "");
-           sMo = sMo.replace("ОБЛАСТИ", "");
-           sMo = sMo.replace("ЗДРАВООХРАНЕНИЯ", "");
-           sMo = sMo.replace('\\', ' ');
-           sMo = sMo.replace('/', ' ');
-           sMo = sMo.replace('.', ' '); 
-           sMo = sMo.replace('"', ' '); 
-           sMo = sMo.replace(',', ' ');
-           sMo = sMo.replace(':', ' ');
-           sMo = sMo.trim();
-           
-           return  sDaseDir + "\\" + sMo;  
-        }  
-		return null;
-	}
-
 
 	private static String getSnils(String fullpath) throws ParserConfigurationException, SAXException, IOException {
 	   File f = new File(fullpath);

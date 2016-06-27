@@ -9,14 +9,12 @@ import java.nio.file.StandardCopyOption;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import akayerov.getsnils.dao.MoDAO;
 import akayerov.getsnils.dao.SnilsDAO;
@@ -90,12 +88,12 @@ public class Program {
 
 		while (fileNameObj != null) {
 
+			fileNameObj = folder.getNextFile(mode);
 			if( mode == MODE_SNILS) {
 				GetSnilsFunction(fileNameObj, rd, mo, sDirComlete, sDirError, snils);
 			}	
 			else if (mode == MODE_MSE) 
 			    MSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils);
-			fileNameObj = folder.getNextFile(mode);
 		}
 
 		/*
@@ -111,49 +109,22 @@ public class Program {
 			MoDAO mo, String sDirComlete, String sDirError, SnilsDAO snils) {
 		int newSnils = 0;
 		int oldSnils = 0;
-		String sSnils = null;
+		String sSnils;
 		if (!fileNameObj.ogrn.equals("999999999")) { // не ошибка
 
 			logger.info("ИПРА выписка из файла:" + fileNameObj.fullpath);
 			String s;
             // Есть ли СНИЛС в выписке?
-			try {
-				sSnils = getSnils(fileNameObj.fullpath);
-			} catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			sSnils = getSnils(fileNameObj.fullpath);
 			if(!sSnils.isEmpty()) {
-				logger.info("Найден СНИЛС в файле ИПРА:" + sSnils);
-				// СНИЛС  в базе есть?  Если есть -  тогда файла перемещаем в папку для соотвествующей организации
-				// и последующей отправки в МО
-                Snils sn = snils.getById(sSnils);
-                if(sn != null) {
-    				logger.info("Найден СНИЛС в базе данных:" + sSnils);
-    				Mo m = mo.getByOgrn(sn.getOgrn());
-    				if (m == null) {
-    					logger.error("ОГРН отсуствует в списке МО:" + sn.getOgrn());
-    				} else {
-    					logger.info("ОГРН:" +sn.getOgrn() + ":"
-    							+ m.getName().trim());
-    					String nameFolder = constructNameFolder(sDirComlete, m.getName().trim());
-    					logger.info("Перемещаем докумен в папку:" + nameFolder);
-    					
-    				}	
-                	
-                }
-				
+				logger.info("Найден СНИЛС:" + sSnils);
 				
 			}
 			else {
-				logger.info("НЕ Найден СНИЛС в файле ИПРА:" + sSnils);
+				logger.info("НЕ Найден СНИЛС:" + sSnils);
 			}
+			// СНИЛС  вбазе есть?  Если есть -  тогда файла перемещаем в папку для соотвествующей организации
+			// и последующей отправки
 			
 //			Move(fileNameObj.fullpath, sDirComlete);
 		} else {
@@ -166,28 +137,7 @@ public class Program {
 		
 	}
 
-	private static String constructNameFolder(String sDaseDir, String sMo) {
-        if(sMo != null) {
-           sMo = sMo.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
-           sMo = sMo.replace("УЧРЕЖДЕНИЕ", "");
-           sMo = sMo.replace("ЯРОСЛАВСКОЙ", "");
-           sMo = sMo.replace("ОБЛАСТИ", "");
-           sMo = sMo.replace("ЗДРАВООХРАНЕНИЯ", "");
-           sMo = sMo.replace('\\', ' ');
-           sMo = sMo.replace('/', ' ');
-           sMo = sMo.replace('.', ' '); 
-           sMo = sMo.replace('"', ' '); 
-           sMo = sMo.replace(',', ' ');
-           sMo = sMo.replace(':', ' ');
-           sMo = sMo.trim();
-           
-           return  sDaseDir + "\\" + sMo;  
-        }  
-		return null;
-	}
-
-
-	private static String getSnils(String fullpath) throws ParserConfigurationException, SAXException, IOException {
+	private static String getSnils(String fullpath) {
 	   File f = new File(fullpath);
        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
        DocumentBuilder builder = factory.newDocumentBuilder();
@@ -197,11 +147,18 @@ public class Program {
        Element SNILS = (Element) root.getElementsByTagName("SNILS").item(0);
        if(SNILS != null) {
            String textSNILS = SNILS.getTextContent(); // тоже для упрощения
-           return textSNILS;
+           System.out.println(textSNILS);
        }  
-       else {
-           return "";
-       }
+       
+       // для простоты сразу берем message
+       Element message = (Element) root.getElementsByTagName("SenderMedOrgName").item(0);
+       if(message != null) {
+         String textContent = message.getTextContent(); // тоже для упрощения
+         //System.out.println(textContent);
+         return textContent;
+       }  
+       else
+  	     return null;
 	}
 
 
