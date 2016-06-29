@@ -1,0 +1,16 @@
+package akayerov.getsnils;
+
+public class IpraFile {
+	String fullpath;
+	String namefile;
+	String ogrn;
+	public IpraFile(String fullpath, String ogrn) {
+		this.fullpath = fullpath;
+		this.ogrn = ogrn;
+	}
+	public IpraFile(String fullpath, String ogrn, String namefile) {
+		this.fullpath = fullpath;
+		this.ogrn = ogrn;
+		this.namefile = namefile;
+	}
+}

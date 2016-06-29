@@ -5,7 +5,34 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2016-06-24T08:00:00Z</updated>
+  <updated>2016-06-28T11:55:00Z</updated>
+  <entry>
+    <title>This Week in Spring - June 28, 2016</title>
+    <link rel="alternate" href="https://spring.io/blog/2016/06/28/this-week-in-spring-june-28-2016" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2016-06-28:2536</id>
+    <updated>2016-06-28T11:55:00Z</updated>
+    <content type="html">&lt;p&gt;Welcome to another installment of &lt;em&gt;This Week in Spring&lt;/em&gt;! This week I&amp;rsquo;m in Munich and Wolfsburg, Germany, visiting with customers, then it&amp;rsquo;s off to Seoul, South Korea, for customers and some user group talks.&lt;/p&gt;
+&lt;img src="https://raw.githubusercontent.com/joshlong/meh/master/wolfsburg-28-06-2016.jpg" /&gt;
+&lt;p&gt;This week we&amp;rsquo;ve got a &lt;em&gt;lot&lt;/em&gt; of exciting Spring Cloud Data Flow news, coincident with the new Spring Cloud Data Flow RC1&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;The good Dr. Pollack, co-lead of the Spring Cloud Data Flow project, &lt;a href="http://spring.io/blog/2016/06/21/spring-cloud-data-flow-1-0-rc1-released"&gt;just announced Spring Cloud Data Flow RC1&lt;/a&gt; which has updated deployers supporting deployments &lt;a href="http://docs.spring.io/spring-cloud-dataflow/docs/1.0.0.RC1/reference/htmlsingle/#getting-started-deploying-spring-cloud-dataflow"&gt;locally&lt;/a&gt; and to &lt;a href="https://spring.io/blog/2016/06/21/spring-cloud-data-flow-for-apache-yarn-1-0-0-rc1-released"&gt;Apache YARN&lt;/a&gt;, &lt;a href="https://spring.io/blog/2016/06/21/spring-cloud-data-flow-for-kubernetes-1-0-0-rc1-released"&gt;Kubernetes&lt;/a&gt;, &lt;a href="https://spring.io/blog/2016/06/21/spring-cloud-data-flow-for-apache-mesos-1-0-0-rc1-released"&gt;Mesos&lt;/a&gt;, and of course &lt;a href="https://spring.io/blog/2016/06/21/spring-cloud-data-flow-for-cloud-foundry-1-0-0-m3-released"&gt;Cloud Foundry&lt;/a&gt;, an incredible integration of Spring Cloud Flo (a visualization for Spring Cloud Data Flow streams) into the Spring Cloud Data Flow Dashboard, improved OAuth support and &lt;em&gt;so&lt;/em&gt; much more!&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;really&lt;/em&gt; enjoyed Mark Paluch&amp;rsquo;s &lt;em&gt;excellent&lt;/em&gt; blog pulling back the veil of obscurity around the security secrets sensation sweeping the nation, Hashicorp Vault, and &lt;a href="http://spring.io/blog/2016/06/24/managing-secrets-with-vault"&gt;how Spring Cloud Vault works&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;I loved this discussion between our very &lt;a href="https://www.youtube.com/watch?v=cgTvvdxyIZs"&gt;own Phil Webb, Spring Boot co-founder, and Andrew Clay Shafer, one of our cloud luminaries&lt;/a&gt;!&lt;/li&gt;
+  &lt;li&gt;Have you seen &lt;a href="http://cloud.spring.io/spring-cloud-task-app-starters/"&gt;our new Spring Cloud Task Starters?&lt;/a&gt; From the page: &amp;ldquo;the Spring Cloud Task Application Starters are standalone executable applications that can be used for on-demand use-cases such as database migration, machine learning, and scheduled operations. These applications can run independently on variety of runtime platforms including: Cloud Foundry, Apache Yarn, Apache Mesos, Kubernetes, Docker, or even on your laptop.&amp;rdquo;&lt;/li&gt;
+  &lt;li&gt;our friends at JDriven put together a nice post on &lt;a href="http://blog.jdriven.com/2016/06/spicy-spring-creating-fully-executable-jar/"&gt;creating fully executable &lt;code&gt;.jar&lt;/code&gt;s with the Spring Boot Maven plugin&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Jakub Narloch put together a great post on a custom auto-configuration to run work &lt;a href="https://jmnarloch.wordpress.com/2016/06/22/spring-boot-rxjava-scheduler/"&gt;on various RxJava schedulers with his custom component model based on Spring Boot&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Stormpath&amp;rsquo;s own Micah Silverman put together a great post &lt;a href="https://www.javacodegeeks.com/2016/06/simple-web-app-spring-boot-spring-security-stormpath-15-minutes.html"&gt;on connecting a Spring Boot application with Stormpath Authentication in 15 minutes&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Trevor Page put together a &lt;a href="http://coderscampus.com/ep01-spring-boot-rocks/"&gt;fun piece&lt;/a&gt; on how the Spring team seem hell-bent on making our lives as Java programmers easier and easier.&amp;quot; I get the feeling we&amp;rsquo;re making fans.. :-)&lt;/li&gt;
+  &lt;li&gt;I haven&amp;rsquo;t read this yet, but this &lt;a href="http://www.springer.com/kr/book/9781484212394"&gt;book on Spring Cloud Data Flow looks interesting&lt;/a&gt;!&lt;/li&gt;
+  &lt;li&gt;In New York City? Check out this meetup &lt;a href="http://www.meetup.com/NYC-SUG/events/232197164/"&gt;on Spring Cloud Data Flow&lt;/a&gt; with Spring Cloud Data Flow lead Mark Pollack himself!&lt;/li&gt;
+  &lt;li&gt;our very own Michael Cot? put together a nice post, &lt;a href="https://www.infoq.com/articles/multi-cloud-choice"&gt;&amp;ldquo;Multi-Cloud is a Safety Belt for the Speed-Freaks&amp;rdquo; for InfoQ&lt;/a&gt;. His posts (and his talks and podcasts!) are insightful and often hilarious.&lt;/li&gt;
+&lt;/ul&gt;&lt;h2&gt;&lt;a href="#springone-platform" class="anchor" name="springone-platform"&gt;&lt;/a&gt;SpringOne Platform&lt;/h2&gt;
+&lt;p&gt;I am &lt;em&gt;really&lt;/em&gt; looking forward to this year&amp;rsquo;s &lt;a href="http://springoneplatform.io"&gt;SpringOne Platform&lt;/a&gt; show, coming in early August. It&amp;rsquo;s an amazing time to build applications, and SpringOne Platform is in a unique position to capture the larger discussion: why do we #devops, #cloud, #agile, or #microservice? Join the discussion August 1-4, 2016 in beautiful Las Vegas and let&amp;rsquo;s find out!&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>Managing Secrets with Vault</title>
     <link rel="alternate" href="https://spring.io/blog/2016/06/24/managing-secrets-with-vault" />
@@ -180,7 +207,7 @@ public class SpringBootVaultHelloWorldApplication {&#xD;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;All the other things are handled by Spring Cloud Vault itself. Now run your application. &lt;/p&gt;
 &lt;p&gt;Congratulations, you&amp;rsquo;ve made it!&lt;/p&gt;&lt;h2&gt;&lt;a href="#outlook" class="anchor" name="outlook"&gt;&lt;/a&gt;Outlook&lt;/h2&gt;
-&lt;p&gt;Spring Cloud Vault lives in the Cloud Incubator right now. It supports Token and &lt;a href="https://www.vaultproject.io/docs/auth/app-id.html"&gt;AppId&lt;/a&gt; authentication. Spring Cloud Vault comes with a starter and dependencies for various database integration and RabbitMQ/Consul support.&lt;br/&gt;You can checkout the project and the &lt;a href="https://github.com/spring-cloud-incubator/spring-cloud-vault-config/blob/master/docs/src/main/asciidoc/spring-cloud-vault-config.adoc"&gt;documentation&lt;/a&gt; at &lt;a href="ttps://github.com/spring-cloud-incubator/spring-cloud-vault-config"&gt;ttps://github.com/spring-cloud-incubator/spring-cloud-vault-config&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Spring Cloud Vault lives in the Cloud Incubator right now. It supports Token and &lt;a href="https://www.vaultproject.io/docs/auth/app-id.html"&gt;AppId&lt;/a&gt; authentication. Spring Cloud Vault comes with a starter and dependencies for various database integration and RabbitMQ/Consul support.&lt;br/&gt;You can checkout the project and the &lt;a href="https://github.com/spring-cloud-incubator/spring-cloud-vault-config/blob/master/docs/src/main/asciidoc/spring-cloud-vault-config.adoc"&gt;documentation&lt;/a&gt; at &lt;a href="https://github.com/spring-cloud-incubator/spring-cloud-vault-config"&gt;ttps://github.com/spring-cloud-incubator/spring-cloud-vault-config&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;We prepared some samples to give you an impression how you could integrate Spring Cloud Vault with your application. You can find the samples at &lt;a href="https://github.com/mp911de/spring-cloud-vault-config-samples"&gt;https://github.com/mp911de/spring-cloud-vault-config-samples&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;We don&amp;rsquo;t have a timeline yet when to release Spring Cloud Vault. You&amp;rsquo;re invited to join &lt;a href="https://2016.event.springoneplatform.io/presenters/spencer_gibb.html"&gt;Spencer Gibb&amp;rsquo;s&lt;/a&gt; talk at &lt;a href="https://springoneplatform.io/"&gt;SpringOne Platform 2016&lt;/a&gt; about &lt;a href="https://2016.event.springoneplatform.io/schedule/sessions/spring_cloud_with_consul_and_vault.html"&gt;Spring Cloud with Consul and Vault&lt;/a&gt; or mine to learn how to &lt;a href="https://2016.event.springoneplatform.io/schedule/sessions/managing_secrets_at_scale.html"&gt;Manage Secrets at Scale&lt;/a&gt;. We&amp;rsquo;re interested in your feedback.&lt;/p&gt;
 &lt;p&gt;Thanks to Alex Soto who showed Vault to me. Vault is made by Hashicorp, the guys who created Vagrant, Consul and other great tools.&lt;/p&gt;</content>
@@ -1338,88 +1365,6 @@ So, this is opportunity to give it a try and report any issues you find.&lt;/p&g
 &lt;/div&gt;
 &lt;div class="paragraph"&gt;
 &lt;p&gt;&lt;a href="https://github.com/spring-projects/spring-integration-kafka"&gt;Project Page&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-integration"&gt;Help&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;h1 id="spring-one-platform" class="sect0"&gt;&lt;a class="anchor" href="#spring-one-platform"&gt;&lt;/a&gt;Spring One Platform&lt;/h1&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;&lt;a href="https://spring.io/team/grussell"&gt;Gary Russell&lt;/a&gt; will be talking about &lt;a href="https://2016.event.springoneplatform.io/schedule/sessions/spring_for_apache_kafka.html"&gt;Spring for Apache Kafka&lt;/a&gt; at &lt;a href="http://springoneplatform.io"&gt;Spring One Platform&lt;/a&gt;, which is taking place in Las Vegas between August 1-4 this year.
-There are many other great talks so &lt;a href="https://2016.event.springoneplatform.io/schedule/sessions"&gt;check the agenda&lt;/a&gt; and &lt;a href="https://2016.event.springoneplatform.io/register"&gt;get your ticket&lt;/a&gt; if you haven’t done so already.&lt;/p&gt;
-&lt;/div&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring for Apache Kafka 1.0 Release Candidate 1 Available</title>
-    <link rel="alternate" href="https://spring.io/blog/2016/06/07/spring-for-apache-kafka-1-0-release-candidate-1-available" />
-    <category term="releases" label="Releases" />
-    <author>
-      <name>Artem Bilan</name>
-    </author>
-    <id>tag:spring.io,2016-06-07:2519</id>
-    <updated>2016-06-07T10:46:00Z</updated>
-    <content type="html">&lt;div class="paragraph"&gt;
-&lt;p&gt;On behalf of the  Spring Integration and Spring Cloud Stream teams, I&amp;#8217;m pleased to announce that the &lt;code&gt;spring-kafka&lt;/code&gt; (Spring for Apache Kafka) Release Candidate for version &lt;code&gt;1.0&lt;/code&gt; is now available.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The artifacts &lt;code&gt;org.springframework.kafka:spring-kafka:1.0.0.RC1&lt;/code&gt; and &lt;code&gt;org.springframework.kafka:spring-kafka-test:1.0.0.RC1&lt;/code&gt; are available in the &lt;a href="https://repo.spring.io/milestone/"&gt;Milestone&lt;/a&gt; repository.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;First of all many thanks to everyone involved, to active community members, who provided feature requests and contributions.
-Special thanks to &lt;a href="https://github.com/martindam"&gt;Martin Dam&lt;/a&gt;, who spent a lot of time helping us with the &lt;code&gt;pause/resume&lt;/code&gt; algorithm to handle slow listeners.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;There have been a number of reworks and housekeeping since the &lt;a href="https://spring.io/blog/2016/04/11/spring-for-apache-kafka-1-0-milestone-2-available"&gt;Second Milestone&lt;/a&gt; including:&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="ulist"&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;A &lt;code&gt;ConsumerRebalanceListener&lt;/code&gt; can be injected into the &lt;code&gt;MessageListenerContainer&lt;/code&gt;;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;The &lt;code&gt;KafkaConsumer&lt;/code&gt; and &lt;code&gt;KafkaProducer&lt;/code&gt; can be customized with &lt;code&gt;(De)Serializer&lt;/code&gt; s for &lt;code&gt;key&lt;/code&gt; and &lt;code&gt;value&lt;/code&gt; in the &lt;code&gt;ConsumerFactory&lt;/code&gt; and &lt;code&gt;ProducerFactory&lt;/code&gt;, respectively; this is an alternative to configuring using the properties.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;JsonSerializer&lt;/code&gt; and &lt;code&gt;JsonDeserializer&lt;/code&gt; s are provided, based on the Jackson library;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;A &lt;code&gt;RecordFilterStrategy&lt;/code&gt; and the &lt;code&gt;FilteringMessageListenerAdapter&lt;/code&gt; are provided to allow skipping records or dealing with duplicate deliveries;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;A self-explanatory &lt;code&gt;RetryingMessageListenerAdapter&lt;/code&gt; is provided;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;A &lt;code&gt;ListenerContainerIdleEvent&lt;/code&gt; is emitted, after a configurable time, when the &lt;code&gt;MessageListenerContainer&lt;/code&gt; has moved to an idle state;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;TopicPartitionInitialOffset&lt;/code&gt; is provided to allow configuring the &lt;code&gt;MessageListenerContainer&lt;/code&gt; to be assigned to specific partitions in the topic(s) and, optionally, seek to the desired offset when starting;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;The &lt;code&gt;@KafkaListener&lt;/code&gt; 's &lt;code&gt;@TopicPartition&lt;/code&gt; attribute is enhanced with the &lt;code&gt;@PartitionOffset&lt;/code&gt; property for initial offset configuration;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Improvements for consumer rebalance events.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;h1 id="pause-and-resume-for-slow-listeners" class="sect0"&gt;&lt;a class="anchor" href="#pause-and-resume-for-slow-listeners"&gt;&lt;/a&gt;Pause and resume for slow listeners&lt;/h1&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The main feature that has been implemented for this Release Candidate, is pausing/resuming the &lt;code&gt;KafkaConsumer&lt;/code&gt; when the target listener is slow to process records.
-If we don&amp;#8217;t poll &lt;code&gt;KafkaConsumer&lt;/code&gt; within the &lt;code&gt;session.timeout.ms&lt;/code&gt;, Kafka presumes our consumer is defective and initiates a partition rebalance process, when using group management for partition assignment.
-To stay alive, we have to poll consumer.
-Consider the case where Kafka returned a large number of records on a poll and it takes longer than the session timeout to process them.
-For this purpose, the &lt;code&gt;MessageListenerContainer&lt;/code&gt; can be configured with &lt;code&gt;enablePause&lt;/code&gt;, &lt;code&gt;pauseAfter&lt;/code&gt; and &lt;code&gt;queueDepth&lt;/code&gt; - and the &lt;code&gt;KafkaConsumer&lt;/code&gt; will be paused (polling continues but no records will be received) until the listener completes its work and the consumer is resumed.
-One more time thanks to &lt;a href="https://github.com/martindam"&gt;Martin Dam&lt;/a&gt; for his help with this feature and his testing.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;See also the &lt;a href="http://docs.spring.io/spring-kafka/docs/1.0.0.RC1/reference/htmlsingle/"&gt;Reference Manual&lt;/a&gt; for more information.&lt;/p&gt;
-&lt;/div&gt;
-&lt;h1 id="spring-integration-kafka-support" class="sect0"&gt;&lt;a class="anchor" href="#spring-integration-kafka-support"&gt;&lt;/a&gt;Spring Integration Kafka Support&lt;/h1&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;Don&amp;#8217;t miss the &lt;a href="https://spring.io/blog/2016/06/07/spring-integration-kafka-support-2-0-0-release-candidate-is-now-available"&gt;Release Candidate&lt;/a&gt; for Spring Integration Kafka 2.0 which is reworked to be based on this Spring for Apache Kafka foundation.&lt;/p&gt;
-&lt;/div&gt;
-&lt;h1 id="next-steps" class="sect0"&gt;&lt;a class="anchor" href="#next-steps"&gt;&lt;/a&gt;Next Steps&lt;/h1&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;We expect to release the GA in about a week, so please give the candidate a try and report any issues as soon as possible.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;&lt;a href="http://projects.spring.io/spring-kafka/"&gt;Project Page&lt;/a&gt; | &lt;a href="http://docs.spring.io/spring-kafka/docs/1.0.0.RC1/reference/htmlsingle/"&gt;Documentation&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-kafka/issues"&gt;Issues&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-integration"&gt;Help&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;h1 id="spring-one-platform" class="sect0"&gt;&lt;a class="anchor" href="#spring-one-platform"&gt;&lt;/a&gt;Spring One Platform&lt;/h1&gt;
 &lt;div class="paragraph"&gt;

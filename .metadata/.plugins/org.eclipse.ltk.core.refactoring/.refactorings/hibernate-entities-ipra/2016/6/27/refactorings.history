@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;Prg.java&apos; to &apos;GetSnils/src/main/java/akayerov.getsnils.models&apos;&#x0D;&#x0A;- Original project: &apos;hibernate-entities-ipra&apos;&#x0D;&#x0A;- Destination element: &apos;GetSnils/src/main/java/akayerov.getsnils.models&apos;&#x0D;&#x0A;- Original element: &apos;developer.remarks.models.Prg.java&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="=GetSnils/src\/main\/java&lt;akayerov.getsnils.models" element1="/src\/main\/java&lt;developer.remarks.models{Prg.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1467098761348" units="1" version="1.0"/>
+</session>

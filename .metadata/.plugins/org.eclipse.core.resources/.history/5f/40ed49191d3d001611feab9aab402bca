@@ -1,0 +1,10 @@
+package akayerov.getsnils;
+
+import java.io.File;
+
+import akayerov.getsnils.IpraFile;
+
+public interface FolderSnils {
+	public IpraFile getNextFile(int mode);
+	public File setPath(String path);
+}

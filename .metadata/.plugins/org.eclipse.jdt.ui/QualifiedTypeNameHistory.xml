@@ -8,4 +8,26 @@
 <fullyQualifiedTypeName name="javax.persistence.Query"/>
 <fullyQualifiedTypeName name="akayerov.fillsnils.models.Mo"/>
 <fullyQualifiedTypeName name="akayerov.getsnils.Program"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.dao.PrgDAO"/>
+<fullyQualifiedTypeName name="developer.remarks.models.Prg"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.models.Mse"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.dao.MseDAO"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.models.Prg"/>
+<fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
+<fullyQualifiedTypeName name="java.util.Locale"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="java.net.URI"/>
+<fullyQualifiedTypeName name="java.util.Deque"/>
+<fullyQualifiedTypeName name="java.util.LinkedList"/>
+<fullyQualifiedTypeName name="java.io.OutputStream"/>
+<fullyQualifiedTypeName name="java.io.FileOutputStream"/>
+<fullyQualifiedTypeName name="java.io.Closeable"/>
+<fullyQualifiedTypeName name="java.util.zip.ZipOutputStream"/>
+<fullyQualifiedTypeName name="java.util.zip.ZipEntry"/>
+<fullyQualifiedTypeName name="java.io.FileInputStream"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.Zip"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.FolderIpraImpl"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
 </qualifiedTypeNameHistroy>
