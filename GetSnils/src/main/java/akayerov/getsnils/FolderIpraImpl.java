@@ -31,7 +31,8 @@ public class FolderIpraImpl implements FolderIpra {
 					int pos_end   = sogrn.lastIndexOf(".", sogrn.length());
 					if(pos_start< 0 || pos_end < 0)
 						sogrn="999999999";                                    // код ошибки записываем в поле ОГРН
-		    	    sogrn = sogrn.substring(pos_start+1,pos_end);
+					else
+					    sogrn = sogrn.substring(pos_start+1,pos_end);
 				}
 				else
 					sogrn="999999999";
@@ -45,6 +46,29 @@ public class FolderIpraImpl implements FolderIpra {
 					sogrn="999999999";
 				}
 		    	return new IpraFile(fList[idx++].getAbsolutePath(),sogrn,namefile);
+            }
+            else if( mode == Program.MODE_RESULT ) {
+				String type = sogrn.substring(0,2).toUpperCase();
+				if( type.equals("RE")) {
+		            int pos_start = sogrn.lastIndexOf("_", sogrn.length());
+		            int pos_start2= sogrn.lastIndexOf("_", pos_start-1);
+					int pos_end   = sogrn.lastIndexOf(".", sogrn.length());
+					if(pos_start < 0 || pos_start2 < 0 || pos_end < 0)
+						sogrn="999999999";                                    // код ошибки записываем в поле ОГРН
+					else {
+						type = sogrn.substring(pos_end+1).toUpperCase();
+						if(!type.equals("XML")) {
+							sogrn="999999999";
+						}
+						else {
+						    sogrn = sogrn.substring(pos_start2+1,pos_start);
+						}
+					}
+				}
+				else
+					sogrn="999999999";
+		    	return new IpraFile(fList[idx++].getAbsolutePath(),sogrn);
+            	
             }
 		}		  
     	idx++;

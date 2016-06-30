@@ -13,3 +13,6 @@
 1467110586914	Rename type 'FolderSnils'
 1467110612689	Rename type 'FolderSnilsImpl'
 1467189404317	Rename field 'nmFile'
+1467280934458	Rename method 'GetSnilsFunction'
+1467280941681	Rename method 'MSEFunction'
+1467291294816	Rename local variable 'SNILS'

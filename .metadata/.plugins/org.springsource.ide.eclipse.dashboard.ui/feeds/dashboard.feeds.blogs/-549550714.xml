@@ -5,7 +5,36 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2016-06-28T11:55:00Z</updated>
+  <updated>2016-06-29T10:19:00Z</updated>
+  <entry>
+    <title>Spring for Apache Hadoop 2.4.0 GA released</title>
+    <link rel="alternate" href="https://spring.io/blog/2016/06/29/spring-for-apache-hadoop-2-4-0-ga-released" />
+    <category term="releases" label="Releases" />
+    <author>
+      <name>Thomas Risberg</name>
+    </author>
+    <id>tag:spring.io,2016-06-29:2537</id>
+    <updated>2016-06-29T10:19:00Z</updated>
+    <content type="html">&lt;p&gt;We are pleased to announce the Spring for Apache Hadoop 2.4.0 GA release.&lt;/p&gt;
+&lt;p&gt;In addition to version upgrades for Hadoop distros Spring for Apache Hadoop 2.4 adds the following improvements:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Add build support for HDP 2.4 [SHDP-557]&lt;/li&gt;
+  &lt;li&gt;Create utils sub-project [SHDP-556]&lt;/li&gt;
+  &lt;li&gt;Fix issue where NetworkUtils may find wrong default address [SHDP-546]&lt;/li&gt;
+  &lt;li&gt;Missing trailing slash on spring.yarn.applicationDir path fails to localize [SHDP-562]&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;See the release &lt;a href="http://docs.spring.io/spring-hadoop/docs/2.4.0.RELEASE/changelog.txt"&gt;changelog&lt;/a&gt; for details.&lt;/p&gt;
+&lt;p&gt;We continue to provide version specific artifacts with their respective transitive dependencies in the Spring IO milestone repository:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;2.4.0.RELEASE (default - Apache Hadoop stable 2.7.1)&lt;/li&gt;
+  &lt;li&gt;2.4.0.RELEASE-phd30 (Pivotal HD 3.0)&lt;/li&gt;
+  &lt;li&gt;2.4.0.RELEASE-cdh5 (Cloudera CDH 5.7)&lt;/li&gt;
+  &lt;li&gt;2.4.0.RELEASE-hdp23 (Hortonworks HDP 2.3)&lt;/li&gt;
+  &lt;li&gt;2.4.0.RELEASE-hdp24 (Hortonworks HDP 2.4)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Please provide feedback so we can prioritize the work on new features scheduled for 2.5. You can use JIRA issues or GitHub issues (see project page for links).&lt;/p&gt;
+&lt;p&gt;The project page is at - &lt;a href="http://projects.spring.io/spring-hadoop/"&gt;http://projects.spring.io/spring-hadoop/&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>This Week in Spring - June 28, 2016</title>
     <link rel="alternate" href="https://spring.io/blog/2016/06/28/this-week-in-spring-june-28-2016" />
@@ -1331,45 +1360,6 @@ the mouse would be a good example.&lt;/pre&gt;
 &lt;p&gt;In this article we have taken a very broad and high level look at the Reactive movement, setting it in context in the modern enterprise. There are a number of Reactive libraries or frameworks for the JVM, all under active development. To a large extent they provide similar features, but increasingly, thanks to Reactive Streams, they are interoperable. In the &lt;a href="https://spring.io/blog/2016/06/13/notes-on-reactive-programming-part-ii-writing-some-code"&gt;next article&lt;/a&gt; in the series we will get down to brass tacks and have a look at some actual code samples, to get a better picture of the specifics of what it means to be Reactive and why it matters. We will also devote some time to understanding why the "F" in FRP is important, and how the concepts of back pressure and non-blocking code have a profound impact on programming style. And most importantly, we will help you to make the important decision about when and how to go Reactive, and when to stay put on the older styles and stacks.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;/div&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring Integration Kafka Support 2.0.0 Release Candidate is now available</title>
-    <link rel="alternate" href="https://spring.io/blog/2016/06/07/spring-integration-kafka-support-2-0-0-release-candidate-is-now-available" />
-    <category term="releases" label="Releases" />
-    <author>
-      <name>Artem Bilan</name>
-    </author>
-    <id>tag:spring.io,2016-06-07:2520</id>
-    <updated>2016-06-07T11:47:00Z</updated>
-    <content type="html">&lt;div class="paragraph"&gt;
-&lt;p&gt;I am pleased to announce that the &lt;code&gt;spring-integration-kafka&lt;/code&gt; (Spring Integration Kafka Support) Release Candidate for version &lt;code&gt;2.0&lt;/code&gt; is now available.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The artifact &lt;code&gt;org.springframework.integration:spring-integration-kafka:2.0.0.RC1&lt;/code&gt; is available in the &lt;a href="https://repo.spring.io/milestone/"&gt;Milestone Repository&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;This version is based on the just released Spring for Apache Kafka release candidate &lt;a href="https://spring.io/blog/2016/06/07/spring-for-apache-kafka-1-0-release-candidate-1-available"&gt;1.0.0.RC1&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;There are not many changes since the previous &lt;a href="https://spring.io/blog/2016/04/11/spring-integration-kafka-support-2-0-0-m1-is-now-available"&gt;Milestone 1&lt;/a&gt;.
-Just some general internal fixes and upgrades to accommodate recent Spring for Apache Kafka changes.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The Spring Integration Java DSL &lt;code&gt;1.2&lt;/code&gt; and its &lt;code&gt;Kafka09&lt;/code&gt; Factory has also been changed to catch up the latest Spring for Apache Kafka API.
-Milestone 1 for the DSL will be available soon.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;We are going to release &lt;code&gt;2.0.0.RELEASE&lt;/code&gt; in the next week or so, together with Spring for Apache Kafka 1.0.0.RELEASE.
-So, this is opportunity to give it a try and report any issues you find.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;&lt;a href="https://github.com/spring-projects/spring-integration-kafka"&gt;Project Page&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-integration"&gt;Help&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;h1 id="spring-one-platform" class="sect0"&gt;&lt;a class="anchor" href="#spring-one-platform"&gt;&lt;/a&gt;Spring One Platform&lt;/h1&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;&lt;a href="https://spring.io/team/grussell"&gt;Gary Russell&lt;/a&gt; will be talking about &lt;a href="https://2016.event.springoneplatform.io/schedule/sessions/spring_for_apache_kafka.html"&gt;Spring for Apache Kafka&lt;/a&gt; at &lt;a href="http://springoneplatform.io"&gt;Spring One Platform&lt;/a&gt;, which is taking place in Las Vegas between August 1-4 this year.
-There are many other great talks so &lt;a href="https://2016.event.springoneplatform.io/schedule/sessions"&gt;check the agenda&lt;/a&gt; and &lt;a href="https://2016.event.springoneplatform.io/register"&gt;get your ticket&lt;/a&gt; if you haven’t done so already.&lt;/p&gt;
 &lt;/div&gt;</content>
   </entry>
 </feed>

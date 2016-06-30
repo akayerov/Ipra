@@ -36,6 +36,8 @@ public class Program {
 	private static final Logger logger = Logger.getLogger(Program.class);
 	private static final String DIR_COMLETE = "COMPLETE";
 	private static final String DIR_ERROR = "ERROR";
+	private static final String DIR_SUCCESS = "Успешно";
+	private static final String DIR_FAIL    = "Неудача";
 
 	private static final int MODE_UNKNOWN = 0;
 	public static final int MODE_SNILS = 1;
@@ -91,7 +93,7 @@ public class Program {
 		String sDirError = args[1] + "\\" + DIR_ERROR;
 		File dirError = new File(sDirError);
 		if (dirError.exists() && dirError.isDirectory()) {
-			logger.info("Файлы с ошибками перемещаются в папку:" + sDirError);
+			logger.info("Файлы с ошибками наименования перемещаются в папку:" + sDirError);
 		} else {
 			logger.info("Папка не найдена, будет создана сейчас:" + sDirError);
 			dirError.mkdir();
@@ -103,10 +105,12 @@ public class Program {
 		while (fileNameObj != null) {
 
 			if (mode == MODE_SNILS) {
-				GetSnilsFunction(fileNameObj, rd, mo, sDirComlete, sDirError,
+				getSnilsFunction(fileNameObj, rd, mo, sDirComlete, sDirError,
 						snils);
 			} else if (mode == MODE_MSE)
-				MSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
+				mMSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
+		      else if (mode == MODE_RESULT)
+		 	   resultIpraFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
 			fileNameObj = folder.getNextFile(mode);
 		}
 
@@ -116,10 +120,142 @@ public class Program {
 		}
 	}
 
+
+	/*
+	 * resultIpraFunction - обработка результатов ИПРА
+	 */
+	
+	private static void resultIpraFunction(IpraFile fileNameObj, MoDAO mo,
+			String sDirComlete, String sDirError, SnilsDAO snils, MseDAO mse) {
+		Mo m = null;
+		if (!fileNameObj.ogrn.equals("999999999")) { // не ошибка
+  
+			logger.info("ИПРА результат из файла:" + fileNameObj.fullpath);
+            // проверить, если запись по программе PRG, если есть , то обновить, если нет - добавить
+            // PRG_EXCH _ добавлять / изменять только для своей МО, побочный эффект можно будет оследить
+			// выполнение ИПРА для нескольких МО по одному СНИЛС
+			m = mo.getByOgrn(fileNameObj.ogrn);
+			if (m == null) {
+			  logger.error("ОГРН отсуствует в списке МО:" + fileNameObj.ogrn);
+			  Move(fileNameObj.fullpath, sDirError, true);
+			}  
+			else {  
+		 	  logger.info("Мо определена:" + m.getName());
+		 	  ParseFieldPrg(fileNameObj);
+//			  Move(fileNameObj.fullpath, sDirComlete, true);
+			}    
+		}
+		else {  // плохое имя файла
+		   logger.error("Неправильное имя файла:" + fileNameObj.fullpath + " .Файл перемещен в: " + sDirError);
+		   Move(fileNameObj.fullpath, sDirError, true);
+		}
+		logger.info("ИПРА результат обработан---------------------------");
+		
+	}
+
+/*
+  Разбор файла с результатами программы 
+ */	
+	
+	private static void ParseFieldPrg(IpraFile fileNameObj) {
+		// TODO Auto-generated method stub
+        int num_err = 0;
+		Prg prg = new Prg();
+		File f = new File(fileNameObj.fullpath);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		try {
+			builder = factory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Document document = null;
+		try {
+			document = builder.parse(f);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Element root = document.getDocumentElement();
+
+		
+		Element actualDate = (Element) root.getElementsByTagName("ActualDate").item(0);
+		if (actualDate != null) {
+			String s = actualDate.getTextContent();
+			Date date = null;
+			try {
+				date = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(s);
+			} catch (ParseException e) {
+// Переписать - сформировать ошибку, но не генерить останов разбора
+				e.printStackTrace();
+                num_err++;
+			}
+			prg.setDt(date);
+		} else {
+			prg.setDt(null);
+            num_err++;
+		}
+		
+		Element snils = (Element) root.getElementsByTagName("Snils").item(0);
+		if (snils != null) {
+			prg.setSnils(snils.getTextContent());
+		} else {
+			prg.setSnils("");
+            num_err++;
+		}
+	///////////////////////////////////////////////// конец	
+		Element FNAME = (Element) root.getElementsByTagName("ct:FirstName").item(0);
+		if (FNAME != null) {
+			prg.setFname(FNAME.getTextContent());
+		} else {
+			prg.setFname("");
+		}
+		Element SNAME = (Element) root.getElementsByTagName("ct:SecondName").item(0);
+		if (SNAME != null) {
+			prg.setSname(SNAME.getTextContent());
+		} else {
+			prg.setSname("");
+		}
+		Element LNAME = (Element) root.getElementsByTagName("ct:LastName").item(0);
+		if (LNAME != null) {
+			prg.setLname(LNAME.getTextContent());
+		} else {
+			prg.setLname("");
+		}
+		
+		Element BDATE = (Element) root.getElementsByTagName("BirthDate").item(0);
+		if (BDATE != null) {
+			String s = BDATE.getTextContent();
+			Date date = null;
+			try {
+				date = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(s);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+//			logger.info("Дата рождения:" + date);
+			prg.setBdate(date);
+		} else {
+			prg.setBdate(null);
+		}
+		
+		prg.setIdMo(mo.getId());
+		prg.setDt(new Date());
+		prg.setNameFile(fileNameObj.namefile);
+		
+		prgDAO.save(prg);
+		
+	}
+
+
 	/*
 	 * MSEFunction - функция обрабатывает очередной XML-файл из МСЭ
 	 */
-	private static void MSEFunction(IpraFile fileNameObj, MoDAO mo,
+	private static void mMSEFunction(IpraFile fileNameObj, MoDAO mo,
 			String sDirComlete, String sDirError, SnilsDAO snils, MseDAO mse) {
 		int newSnils = 0;
 		int oldSnils = 0;
@@ -179,7 +315,7 @@ public class Program {
 				logger.info("НЕ Найден СНИЛС в файле ИПРА:" + sSnils);
 			}
 		} else {
-			logger.error("Error Name File:" + fileNameObj.fullpath);
+			logger.error("Неправильное имя файла:" + fileNameObj.fullpath);
 			Move(fileNameObj.fullpath, sDirError, true);
 		}
 		logger.info("ИПРА выписка обработана---------------------------");
@@ -270,7 +406,7 @@ public class Program {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			logger.info("Дата рождения:" + date);
+//			logger.info("Дата рождения:" + date);
 			mse.setBdate(date);
 		} else {
 			mse.setBdate(null);
@@ -331,7 +467,7 @@ public class Program {
 		else
 			smonth = "" + month;
 		
-		File zipFile = new File(sDirComlete +"\\VI_" + (year-2000) + smonth + "_IPRA.zip");
+		File zipFile = new File(sDirComlete +"\\IR_" + (year-2000) + smonth + ".zip");
 
 		
 		try {
@@ -364,7 +500,7 @@ public class Program {
 	/*
 	 * GetSnilsFunction - функция обрабатывает очередной СНИЛС файл
 	 */
-	private static void GetSnilsFunction(IpraFile fileNameObj, ReaderSnils rd,
+	private static void getSnilsFunction(IpraFile fileNameObj, ReaderSnils rd,
 			MoDAO mo, String sDirComlete, String sDirError, SnilsDAO snils) {
 		int newSnils = 0;
 		int oldSnils = 0;
@@ -436,15 +572,16 @@ public class Program {
 				dirDest.mkdir();
 			}
 		}
+        Move(fullpath, sDirDistination);
+	}
+	
+	private static void CreateFolder(String sDirDistination) {
+			File dirDest = new File(sDirDistination);
+			if (dirDest.exists() && dirDest.isDirectory()) {
+			} else {
+				dirDest.mkdir();
+			}
 
-		Path movefrom = FileSystems.getDefault().getPath(fullpath);
-		Path target_dir = FileSystems.getDefault().getPath(sDirDistination);
-		try {
-			Files.move(movefrom, target_dir.resolve(movefrom.getFileName()),
-					StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			System.err.println(e);
-		}
 	}
 
 }
