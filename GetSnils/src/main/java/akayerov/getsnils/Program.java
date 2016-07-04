@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -18,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -25,10 +27,12 @@ import org.xml.sax.SAXException;
 import akayerov.getsnils.dao.MoDAO;
 import akayerov.getsnils.dao.MseDAO;
 import akayerov.getsnils.dao.PrgDAO;
+import akayerov.getsnils.dao.Prg_rhbDAO;
 import akayerov.getsnils.dao.SnilsDAO;
 import akayerov.getsnils.models.Mo;
 import akayerov.getsnils.models.Mse;
 import akayerov.getsnils.models.Prg;
+import akayerov.getsnils.models.Prg_rhb;
 import akayerov.getsnils.models.Snils;
 
 public class Program {
@@ -77,6 +81,7 @@ public class Program {
 		SnilsDAO snils = (SnilsDAO) context.getBean("storageSnils");
 		MoDAO mo = (MoDAO) context.getBean("storageMo");
 		PrgDAO prg = (PrgDAO) context.getBean("storagePrg");
+		Prg_rhbDAO prg_rhb = (Prg_rhbDAO) context.getBean("storagePrg_rhb");
 		MseDAO mse = (MseDAO) context.getBean("storageMse");
 
 		ReaderSnils rd = (ReaderSnils) context.getBean("readerSnils");
@@ -110,7 +115,7 @@ public class Program {
 			} else if (mode == MODE_MSE)
 				mMSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
 		      else if (mode == MODE_RESULT)
-		 	   resultIpraFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
+		 	   resultIpraFunction(fileNameObj, mo, sDirComlete, sDirError, snils, prg, prg_rhb);
 			fileNameObj = folder.getNextFile(mode);
 		}
 
@@ -126,7 +131,7 @@ public class Program {
 	 */
 	
 	private static void resultIpraFunction(IpraFile fileNameObj, MoDAO mo,
-			String sDirComlete, String sDirError, SnilsDAO snils, MseDAO mse) {
+			String sDirComlete, String sDirError, SnilsDAO snils, PrgDAO prgDAO, Prg_rhbDAO prg_rhb) {
 		Mo m = null;
 		if (!fileNameObj.ogrn.equals("999999999")) { // не ошибка
   
@@ -140,8 +145,14 @@ public class Program {
 			  Move(fileNameObj.fullpath, sDirError, true);
 			}  
 			else {  
-		 	  logger.info("Мо определена:" + m.getName());
-		 	  ParseFieldPrg(fileNameObj);
+		 	  logger.debug("Мо определена:" + m.getName());
+		 	  if(ParseFieldPrg(fileNameObj, prgDAO, prg_rhb) == 0) {
+			 	  logger.debug("Успешный разбор XML файла:" + fileNameObj.ogrn);
+		 	  }
+		 	  else {
+			 	  logger.info("Обнаружены ошибки:" + fileNameObj.ogrn);
+		 	  }
+		 	  
 //			  Move(fileNameObj.fullpath, sDirComlete, true);
 			}    
 		}
@@ -149,7 +160,7 @@ public class Program {
 		   logger.error("Неправильное имя файла:" + fileNameObj.fullpath + " .Файл перемещен в: " + sDirError);
 		   Move(fileNameObj.fullpath, sDirError, true);
 		}
-		logger.info("ИПРА результат обработан---------------------------");
+		logger.debug("ИПРА результат обработан---------------------------");
 		
 	}
 
@@ -157,10 +168,14 @@ public class Program {
   Разбор файла с результатами программы 
  */	
 	
-	private static void ParseFieldPrg(IpraFile fileNameObj) {
-		// TODO Auto-generated method stub
+	private static int ParseFieldPrg(IpraFile fileNameObj, PrgDAO prgDAO, Prg_rhbDAO prg_rhbDAO) {
+		
+		Calendar cal;
+		String ssnils = null;
+   	    Prg prg = new Prg();
+   	    Prg_rhb prg_rhb = new Prg_rhb();
+
         int num_err = 0;
-		Prg prg = new Prg();
 		File f = new File(fileNameObj.fullpath);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
@@ -188,12 +203,12 @@ public class Program {
 			String s = actualDate.getTextContent();
 			Date date = null;
 			try {
-				date = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(s);
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
 			} catch (ParseException e) {
 // Переписать - сформировать ошибку, но не генерить останов разбора
 				e.printStackTrace();
                 num_err++;
-			}
+			} 
 			prg.setDt(date);
 		} else {
 			prg.setDt(null);
@@ -201,53 +216,199 @@ public class Program {
 		}
 		
 		Element snils = (Element) root.getElementsByTagName("Snils").item(0);
-		if (snils != null) {
-			prg.setSnils(snils.getTextContent());
+		if (snils != null && !snils.getTextContent().equals("")) {
+            ssnils = snils.getTextContent();
+			prg.setSnils(ssnils);
 		} else {
 			prg.setSnils("");
             num_err++;
 		}
-	///////////////////////////////////////////////// конец	
-		Element FNAME = (Element) root.getElementsByTagName("ct:FirstName").item(0);
-		if (FNAME != null) {
-			prg.setFname(FNAME.getTextContent());
-		} else {
-			prg.setFname("");
-		}
-		Element SNAME = (Element) root.getElementsByTagName("ct:SecondName").item(0);
-		if (SNAME != null) {
-			prg.setSname(SNAME.getTextContent());
-		} else {
-			prg.setSname("");
-		}
-		Element LNAME = (Element) root.getElementsByTagName("ct:LastName").item(0);
-		if (LNAME != null) {
-			prg.setLname(LNAME.getTextContent());
+		
+		Element lname = (Element) root.getElementsByTagName("LName").item(0);
+		if (lname != null && !lname.getTextContent().equals("")) {
+			prg.setLname(lname.getTextContent());
 		} else {
 			prg.setLname("");
+            num_err++;
 		}
 		
-		Element BDATE = (Element) root.getElementsByTagName("BirthDate").item(0);
-		if (BDATE != null) {
-			String s = BDATE.getTextContent();
+		Element fname = (Element) root.getElementsByTagName("FName").item(0);
+		if (fname != null  && !fname.getTextContent().equals("")) {
+			prg.setFname(fname.getTextContent());
+		} else {
+			prg.setFname("");
+            num_err++;
+		}
+
+		Element sname = (Element) root.getElementsByTagName("SName").item(0);
+		if (sname != null  && !sname.getTextContent().equals("")) {
+			prg.setSname(sname.getTextContent());
+		} else {
+			prg.setSname("");
+            num_err++;
+		}
+		
+		Element BDate = (Element) root.getElementsByTagName("BDate").item(0);
+		if (BDate != null ) {
+			String s = BDate.getTextContent();
 			Date date = null;
 			try {
-				date = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(s);
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
+// Переписать - сформировать ошибку, но не генерить останов разбора
 				e.printStackTrace();
+                num_err++;
 			}
-//			logger.info("Дата рождения:" + date);
 			prg.setBdate(date);
 		} else {
 			prg.setBdate(null);
+            num_err++;
 		}
 		
-		prg.setIdMo(mo.getId());
-		prg.setDt(new Date());
-		prg.setNameFile(fileNameObj.namefile);
+		Element gndr = (Element) root.getElementsByTagName("Gndr").item(0);
+		if (gndr != null) {
+			try {
+				prg.setGndr(Integer.parseInt(gndr.getTextContent()));
+			} catch (NumberFormatException e) {
+	            num_err++;
+			} catch (DOMException e) {
+	            num_err++;
+			}
+		} else {
+			prg.setGndr(0);
+            num_err++;
+		}
+		
+		Element docNum = (Element) root.getElementsByTagName("DocNum").item(0);
+		if (docNum != null  && !docNum.getTextContent().equals("")) {
+			prg.setDocnum(docNum.getTextContent());
+		} else {
+			prg.setDocnum("");
+            num_err++;
+		}
+
+		Element docDT = (Element) root.getElementsByTagName("DocDT").item(0);
+		if (docDT != null) {
+			String s = docDT.getTextContent();
+			Date date = null;
+			try {
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
+			} catch (ParseException e) {
+// Переписать - сформировать ошибку, но не генерить останов разбора
+				e.printStackTrace();
+                num_err++;
+			}
+			prg.setDocdt(date);
+		} else {
+			prg.setDocdt(null);
+            num_err++;
+		}
+		
+		Element pprg = (Element) root.getElementsByTagName("Prg").item(0);
+		if (pprg != null) {
+			try {
+				prg.setPrg(Integer.parseInt(pprg.getTextContent()));
+			} catch (NumberFormatException e) {
+	            num_err++;
+			} catch (DOMException e) {
+	            num_err++;
+			}
+		} else {
+			prg.setPrg(0);
+            num_err++;
+		}
+
+		Element prgNum = (Element) root.getElementsByTagName("PrgNum").item(0);
+		if (prgNum != null) {
+			prg.setPrgnum(prgNum.getTextContent());
+		} else {
+			prg.setPrgnum("");
+            num_err++;
+		}
+
+		Element prgDT = (Element) root.getElementsByTagName("PrgDT").item(0);
+		if (prgDT != null) {
+			String s = prgDT.getTextContent();
+			Date date = null;
+			try {
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
+			} catch (ParseException e) {
+// Переписать - сформировать ошибку, но не генерить останов разбора
+				e.printStackTrace();
+                num_err++;
+			}
+			prg.setPrgdt(date);
+		} else {
+			prg.setPrgdt(null);
+            num_err++;
+		}
+		Element mseid = (Element) root.getElementsByTagName("MSEID").item(0);
+		if (mseid != null) {
+			prg.setMseid(mseid.getTextContent());
+		} else {
+			prg.setMseid("");
+//            num_err++;
+		}
+		
+// Установка общих константных полей для ЯО
+		prg.setOivid(1);    // Сфера охраны здоровья
+		prg.setOkrId(1);    // ЦФО
+		prg.setNreg(76);    // ЯО
+		
+		
+
+		if(num_err > 0)
+			return num_err;
 		
 		prgDAO.save(prg);
+	
+		prg =  prgDAO.getBySnils(ssnils);
+
+		
+		Element res = (Element) root.getElementsByTagName("ListPRG_RHB").item(0);
+		Element resprg;
+		Element typeid;
+		Element evntid;
+		Element dicid;
+		Element tsrid;
+		Element excid;
+		
+		
+		
+		if (res != null) {
+			int numprg = root.getElementsByTagName("PRG_RHB").getLength();
+			Element result;
+			for(int i=0; i<numprg; i++) {
+			   prg_rhb.setPrgid(prg.getId());
+
+			   typeid = (Element) root.getElementsByTagName("TypeId").item(i);
+			   prg_rhb.setTypeid(Integer.parseInt(typeid.getTextContent()));
+
+			   evntid = (Element) root.getElementsByTagName("EvntId").item(i);
+			   prg_rhb.setEvntid(Integer.parseInt(evntid.getTextContent()));
+
+			   dicid = (Element) root.getElementsByTagName("DicId").item(i);
+			   prg_rhb.setDicid(Integer.parseInt(dicid.getTextContent()));
+			   
+			   tsrid = (Element) root.getElementsByTagName("TsrId").item(i);
+			   prg_rhb.setTsrid(Integer.parseInt(tsrid.getTextContent()));
+				
+			   excid = (Element) root.getElementsByTagName("Ex_Id").item(i);
+			   prg_rhb.setExcid(Integer.parseInt(excid.getTextContent()));
+
+			   result = (Element) root.getElementsByTagName("Result").item(i);
+			   prg_rhb.setResult(result.getTextContent());
+  			   prg_rhbDAO.save(prg_rhb);
+			}
+		} else {
+		}
+
+		
+		
+		
+		
+		
+		return num_err;
 		
 	}
 

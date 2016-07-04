@@ -1,5 +1,6 @@
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\ReaderSnilsImpl.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\dao\PrgDAOImpl.java
+C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\dao\Prg_rhbDAO.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\models\Prg.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\Program.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\models\Snils.java
@@ -11,6 +12,8 @@ C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\dao\S
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\dao\SnilsDAOImpl.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\models\Mse.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\IpraFile.java
+C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\models\Prg_rhb.java
+C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\dao\Prg_rhbDAOImpl.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\dao\MseDAO.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\models\Mo.java
 C:\Users\a_kayerov\workspace_ipra\GetSnils\src\main\java\akayerov\getsnils\Zip.java

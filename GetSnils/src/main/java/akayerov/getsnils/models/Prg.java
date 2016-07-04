@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.sql.Timestamp;
 
 
@@ -69,6 +71,12 @@ public class Prg implements Serializable {
 	private String snils;
 
 	private Timestamp udt;
+
+	// привязка  табличной части    
+/*
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Prg_rhb> prg_rhb = new ArrayList<>();
+*/	
 
 	public Prg() {
 	}
@@ -216,6 +224,12 @@ public class Prg implements Serializable {
 	public void setUdt(Timestamp udt) {
 		this.udt = udt;
 	}
+/*	
+	public List<Prg_rhb> getRhbs() {
+	        return prg_rhb;
+	}
+*/	
+	
    @Override
      public String toString(){
 	       return "id="+id+", fname="+fname;

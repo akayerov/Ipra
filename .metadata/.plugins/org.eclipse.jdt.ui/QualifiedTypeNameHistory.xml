@@ -30,4 +30,6 @@
 <fullyQualifiedTypeName name="akayerov.getsnils.Zip"/>
 <fullyQualifiedTypeName name="akayerov.getsnils.FolderIpraImpl"/>
 <fullyQualifiedTypeName name="java.util.Date"/>
+<fullyQualifiedTypeName name="java.util.Calendar"/>
+<fullyQualifiedTypeName name="akayerov.getsnils.models.Prg_rhb"/>
 </qualifiedTypeNameHistroy>
