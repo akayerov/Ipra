@@ -67,7 +67,7 @@ public class FolderIpraImpl implements FolderIpra {
 				}
 				else
 					sogrn="999999999";
-		    	return new IpraFile(fList[idx++].getAbsolutePath(),sogrn);
+		    	return new IpraFile(fList[idx++].getAbsolutePath(),sogrn,namefile);
             	
             }
 		}		  

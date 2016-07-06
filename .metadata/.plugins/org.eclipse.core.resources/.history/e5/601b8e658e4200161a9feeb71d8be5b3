@@ -1,0 +1,9 @@
+package akayerov.getsnils;
+
+import java.util.List;
+
+
+public class ErrorMessage {
+	List<String> lerror = new List()<String>;
+
+}

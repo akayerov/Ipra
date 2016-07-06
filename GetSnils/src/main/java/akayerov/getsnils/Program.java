@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -41,7 +42,7 @@ public class Program {
 	private static final String DIR_COMLETE = "COMPLETE";
 	private static final String DIR_ERROR = "ERROR";
 	private static final String DIR_SUCCESS = "Успешно";
-	private static final String DIR_FAIL    = "Неудача";
+	private static final String DIR_FAIL = "Неудача";
 
 	private static final int MODE_UNKNOWN = 0;
 	public static final int MODE_SNILS = 1;
@@ -98,7 +99,8 @@ public class Program {
 		String sDirError = args[1] + "\\" + DIR_ERROR;
 		File dirError = new File(sDirError);
 		if (dirError.exists() && dirError.isDirectory()) {
-			logger.info("Файлы с ошибками наименования перемещаются в папку:" + sDirError);
+			logger.info("Файлы с ошибками наименования перемещаются в папку:"
+					+ sDirError);
 		} else {
 			logger.info("Папка не найдена, будет создана сейчас:" + sDirError);
 			dirError.mkdir();
@@ -113,70 +115,92 @@ public class Program {
 				getSnilsFunction(fileNameObj, rd, mo, sDirComlete, sDirError,
 						snils);
 			} else if (mode == MODE_MSE)
-				mMSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
-		      else if (mode == MODE_RESULT)
-		 	   resultIpraFunction(fileNameObj, mo, sDirComlete, sDirError, snils, prg, prg_rhb);
+				mSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
+			else if (mode == MODE_RESULT)
+				resultIpraFunction(fileNameObj, mo, sDirComlete, sDirError,
+						snils, prg, prg_rhb);
 			fileNameObj = folder.getNextFile(mode);
 		}
 
 		if (mode == MODE_MSE) {
 			logger.info("Создание Zip архивов:");
-			CreateZIPs(sDirComlete);
+			CreateZIPs(sDirComlete,"IR");
+		}
+		else if (mode == MODE_RESULT) {
+				logger.info("Создание Zip архивов:");
+				CreateZIPs(sDirError,"ERROR");
 		}
 	}
-
 
 	/*
 	 * resultIpraFunction - обработка результатов ИПРА
 	 */
-	
+
 	private static void resultIpraFunction(IpraFile fileNameObj, MoDAO mo,
-			String sDirComlete, String sDirError, SnilsDAO snils, PrgDAO prgDAO, Prg_rhbDAO prg_rhb) {
+			String sDirComlete, String sDirError, SnilsDAO snils,
+			PrgDAO prgDAO, Prg_rhbDAO prg_rhb) {
 		Mo m = null;
+
 		if (!fileNameObj.ogrn.equals("999999999")) { // не ошибка
-  
 			logger.info("ИПРА результат из файла:" + fileNameObj.fullpath);
-            // проверить, если запись по программе PRG, если есть , то обновить, если нет - добавить
-            // PRG_EXCH _ добавлять / изменять только для своей МО, побочный эффект можно будет оследить
+			// проверить, если запись по программе PRG, если есть , то обновить,
+			// если нет - добавить
+			// PRG_EXCH _ добавлять / изменять только для своей МО, побочный
+			// эффект можно будет оследить
 			// выполнение ИПРА для нескольких МО по одному СНИЛС
 			m = mo.getByOgrn(fileNameObj.ogrn);
 			if (m == null) {
-			  logger.error("ОГРН отсуствует в списке МО:" + fileNameObj.ogrn);
-			  Move(fileNameObj.fullpath, sDirError, true);
-			}  
-			else {  
-		 	  logger.debug("Мо определена:" + m.getName());
-		 	  if(ParseFieldPrg(fileNameObj, prgDAO, prg_rhb) == 0) {
-			 	  logger.debug("Успешный разбор XML файла:" + fileNameObj.ogrn);
-		 	  }
-		 	  else {
-			 	  logger.info("Обнаружены ошибки:" + fileNameObj.ogrn);
-		 	  }
-		 	  
-//			  Move(fileNameObj.fullpath, sDirComlete, true);
-			}    
-		}
-		else {  // плохое имя файла
-		   logger.error("Неправильное имя файла:" + fileNameObj.fullpath + " .Файл перемещен в: " + sDirError);
-		   Move(fileNameObj.fullpath, sDirError, true);
+				logger.error("ОГРН отсуствует в списке МО:" + fileNameObj.ogrn);
+				Move(fileNameObj.fullpath, sDirError, true);
+			} else {
+				logger.debug("Мо определена:" + m.getName());
+				ErrorMessage err = new ErrorMessage(m, fileNameObj.namefile);
+
+				String dirDestinationComlete = constructNameFolder(sDirComlete, m
+						.getName().trim());
+				CreateFolder(dirDestinationComlete);
+
+				
+				if (ParseFieldPrg(err, fileNameObj, prgDAO, prg_rhb, m).lerror
+						.size() == 0) {
+					logger.info("Успешный разбор XML файла:"
+							+ fileNameObj.ogrn);
+					Move(fileNameObj.fullpath, dirDestinationComlete, true);
+				} else {
+					logger.info("Обнаружены ошибки:" + fileNameObj.namefile);
+					String dirDestinationError = constructNameFolder(sDirError, m
+							.getName().trim());
+					err.setDirDestination(dirDestinationError);
+					CreateFolder(dirDestinationError);
+
+					err.print();
+					Move(fileNameObj.fullpath, dirDestinationError, true);
+				}
+			}
+		} else { // плохое имя файла
+			logger.error("Неправильное имя файла:" + fileNameObj.fullpath
+					+ " .Файл перемещен в: " + sDirError);
+			Move(fileNameObj.fullpath, sDirError, true);
 		}
 		logger.debug("ИПРА результат обработан---------------------------");
-		
+
 	}
 
-/*
-  Разбор файла с результатами программы 
- */	
-	
-	private static int ParseFieldPrg(IpraFile fileNameObj, PrgDAO prgDAO, Prg_rhbDAO prg_rhbDAO) {
-		
-		Calendar cal;
-		String ssnils = null;
-   	    Prg prg = new Prg();
-   	    Prg_rhb prg_rhb = new Prg_rhb();
+	/*
+	 * Разбор файла с результатами программы
+	 */
 
-        int num_err = 0;
+	private static ErrorMessage ParseFieldPrg(ErrorMessage err,
+			IpraFile fileNameObj, PrgDAO prgDAO, Prg_rhbDAO prg_rhbDAO, Mo m) {
+
+		Calendar cal;
+		String ssnils = "";
+		String snumprg = "";
+		Prg prg = new Prg();
+		Prg_rhb prg_rhb = new Prg_rhb();
+
 		File f = new File(fileNameObj.fullpath);
+
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
 		try {
@@ -197,226 +221,461 @@ public class Program {
 		}
 		Element root = document.getDocumentElement();
 
-		
-		Element actualDate = (Element) root.getElementsByTagName("ActualDate").item(0);
+		Element actualDate = (Element) root.getElementsByTagName("ActualDate")
+				.item(0);
 		if (actualDate != null) {
 			String s = actualDate.getTextContent();
 			Date date = null;
 			try {
-				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+						.parse(s);
 			} catch (ParseException e) {
-// Переписать - сформировать ошибку, но не генерить останов разбора
-				e.printStackTrace();
-                num_err++;
-			} 
+				// Переписать - сформировать ошибку, но не генерить останов
+				// разбора
+				// e.printStackTrace();
+				err.add("Ошибка разбора поля", "actualDate");
+			}
 			prg.setDt(date);
 		} else {
 			prg.setDt(null);
-            num_err++;
+			err.add("actualDate");
 		}
-		
+
 		Element snils = (Element) root.getElementsByTagName("Snils").item(0);
 		if (snils != null && !snils.getTextContent().equals("")) {
-            ssnils = snils.getTextContent();
+			ssnils = snils.getTextContent();
 			prg.setSnils(ssnils);
 		} else {
 			prg.setSnils("");
-            num_err++;
+			err.add("Snils");
 		}
-		
-		Element lname = (Element) root.getElementsByTagName("LName").item(0);
-		if (lname != null && !lname.getTextContent().equals("")) {
-			prg.setLname(lname.getTextContent());
-		} else {
-			prg.setLname("");
-            num_err++;
-		}
-		
-		Element fname = (Element) root.getElementsByTagName("FName").item(0);
-		if (fname != null  && !fname.getTextContent().equals("")) {
-			prg.setFname(fname.getTextContent());
-		} else {
-			prg.setFname("");
-            num_err++;
-		}
-
-		Element sname = (Element) root.getElementsByTagName("SName").item(0);
-		if (sname != null  && !sname.getTextContent().equals("")) {
-			prg.setSname(sname.getTextContent());
-		} else {
-			prg.setSname("");
-            num_err++;
-		}
-		
-		Element BDate = (Element) root.getElementsByTagName("BDate").item(0);
-		if (BDate != null ) {
-			String s = BDate.getTextContent();
-			Date date = null;
-			try {
-				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
-			} catch (ParseException e) {
-// Переписать - сформировать ошибку, но не генерить останов разбора
-				e.printStackTrace();
-                num_err++;
-			}
-			prg.setBdate(date);
-		} else {
-			prg.setBdate(null);
-            num_err++;
-		}
-		
-		Element gndr = (Element) root.getElementsByTagName("Gndr").item(0);
-		if (gndr != null) {
-			try {
-				prg.setGndr(Integer.parseInt(gndr.getTextContent()));
-			} catch (NumberFormatException e) {
-	            num_err++;
-			} catch (DOMException e) {
-	            num_err++;
-			}
-		} else {
-			prg.setGndr(0);
-            num_err++;
-		}
-		
-		Element docNum = (Element) root.getElementsByTagName("DocNum").item(0);
-		if (docNum != null  && !docNum.getTextContent().equals("")) {
-			prg.setDocnum(docNum.getTextContent());
-		} else {
-			prg.setDocnum("");
-            num_err++;
-		}
-
-		Element docDT = (Element) root.getElementsByTagName("DocDT").item(0);
-		if (docDT != null) {
-			String s = docDT.getTextContent();
-			Date date = null;
-			try {
-				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
-			} catch (ParseException e) {
-// Переписать - сформировать ошибку, но не генерить останов разбора
-				e.printStackTrace();
-                num_err++;
-			}
-			prg.setDocdt(date);
-		} else {
-			prg.setDocdt(null);
-            num_err++;
-		}
-		
-		Element pprg = (Element) root.getElementsByTagName("Prg").item(0);
-		if (pprg != null) {
-			try {
-				prg.setPrg(Integer.parseInt(pprg.getTextContent()));
-			} catch (NumberFormatException e) {
-	            num_err++;
-			} catch (DOMException e) {
-	            num_err++;
-			}
-		} else {
-			prg.setPrg(0);
-            num_err++;
-		}
-
 		Element prgNum = (Element) root.getElementsByTagName("PrgNum").item(0);
 		if (prgNum != null) {
-			prg.setPrgnum(prgNum.getTextContent());
+			snumprg = prgNum.getTextContent();
+			prg.setPrgnum(snumprg);
 		} else {
 			prg.setPrgnum("");
-            num_err++;
+			err.add("PrgNum");
 		}
-
-		Element prgDT = (Element) root.getElementsByTagName("PrgDT").item(0);
-		if (prgDT != null) {
-			String s = prgDT.getTextContent();
-			Date date = null;
-			try {
-				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(s);
-			} catch (ParseException e) {
-// Переписать - сформировать ошибку, но не генерить останов разбора
-				e.printStackTrace();
-                num_err++;
+		// snils и prgnum - ключи для проверки есть ли в базе подобная запись
+		// использование одного поля snuils считаю ненадежным - может быть у
+		// человека более одной программы?
+		List<Prg> lPrg = prgDAO.getBySnilsPrgNum(ssnils, snumprg);
+			Element lname = (Element) root.getElementsByTagName("LName")
+					.item(0);
+			if (lname != null && !lname.getTextContent().equals("")) {
+				prg.setLname(lname.getTextContent());
+			} else {
+				prg.setLname("");
+				err.add("LName");
 			}
-			prg.setPrgdt(date);
-		} else {
-			prg.setPrgdt(null);
-            num_err++;
-		}
-		Element mseid = (Element) root.getElementsByTagName("MSEID").item(0);
-		if (mseid != null) {
-			prg.setMseid(mseid.getTextContent());
-		} else {
-			prg.setMseid("");
-//            num_err++;
-		}
-		
-// Установка общих константных полей для ЯО
-		prg.setOivid(1);    // Сфера охраны здоровья
-		prg.setOkrId(1);    // ЦФО
-		prg.setNreg(76);    // ЯО
-		
-		
 
-		if(num_err > 0)
-			return num_err;
-		
-		prgDAO.save(prg);
-	
-		prg =  prgDAO.getBySnils(ssnils);
+			Element fname = (Element) root.getElementsByTagName("FName")
+					.item(0);
+			if (fname != null && !fname.getTextContent().equals("")) {
+				prg.setFname(fname.getTextContent());
+			} else {
+				prg.setFname("");
+				err.add("FName");
+			}
 
-		
-		Element res = (Element) root.getElementsByTagName("ListPRG_RHB").item(0);
-		Element resprg;
-		Element typeid;
-		Element evntid;
-		Element dicid;
-		Element tsrid;
-		Element excid;
-		
-		
-		
-		if (res != null) {
-			int numprg = root.getElementsByTagName("PRG_RHB").getLength();
-			Element result;
-			for(int i=0; i<numprg; i++) {
-			   prg_rhb.setPrgid(prg.getId());
+			Element sname = (Element) root.getElementsByTagName("SName")
+					.item(0);
+			if (sname != null && !sname.getTextContent().equals("")) {
+				prg.setSname(sname.getTextContent());
+			} else {
+				prg.setSname("");
+				err.add("SName");
+			}
 
-			   typeid = (Element) root.getElementsByTagName("TypeId").item(i);
-			   prg_rhb.setTypeid(Integer.parseInt(typeid.getTextContent()));
+			Element BDate = (Element) root.getElementsByTagName("BDate")
+					.item(0);
+			if (BDate != null) {
+				String s = BDate.getTextContent();
+				Date date = null;
+				try {
+					date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+							.parse(s);
+				} catch (ParseException e) {
+					// Переписать - сформировать ошибку, но не генерить останов
+					// разбора
+					err.add("Ошибка разбора поля", "BDate");
+				}
+				prg.setBdate(date);
+			} else {
+				prg.setBdate(null);
+				err.add("BDate");
+			}
 
-			   evntid = (Element) root.getElementsByTagName("EvntId").item(i);
-			   prg_rhb.setEvntid(Integer.parseInt(evntid.getTextContent()));
+			Element gndr = (Element) root.getElementsByTagName("Gndr").item(0);
+			if (gndr != null) {
+				try {
+					prg.setGndr(Integer.parseInt(gndr.getTextContent()));
+				} catch (NumberFormatException e) {
+					err.add("Ошибка формата поля", "Gndr");
+				} catch (DOMException e) {
+					err.add("Ошибка поля", "Gndr");
+				}
+			} else {
+				prg.setGndr(0);
+				err.add("Gndr");
+			}
 
-			   dicid = (Element) root.getElementsByTagName("DicId").item(i);
-			   prg_rhb.setDicid(Integer.parseInt(dicid.getTextContent()));
-			   
-			   tsrid = (Element) root.getElementsByTagName("TsrId").item(i);
-			   prg_rhb.setTsrid(Integer.parseInt(tsrid.getTextContent()));
-				
-			   excid = (Element) root.getElementsByTagName("Ex_Id").item(i);
-			   prg_rhb.setExcid(Integer.parseInt(excid.getTextContent()));
+			Element docNum = (Element) root.getElementsByTagName("DocNum")
+					.item(0);
+			if (docNum != null && !docNum.getTextContent().equals("")) {
+				prg.setDocnum(docNum.getTextContent());
+			} else {
+				prg.setDocnum("");
+				err.add("DocNum");
+			}
 
-			   result = (Element) root.getElementsByTagName("Result").item(i);
-			   prg_rhb.setResult(result.getTextContent());
-  			   prg_rhbDAO.save(prg_rhb);
+			Element docDT = (Element) root.getElementsByTagName("DocDT")
+					.item(0);
+			if (docDT != null) {
+				String s = docDT.getTextContent();
+				Date date = null;
+				try {
+					date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+							.parse(s);
+				} catch (ParseException e) {
+					// Переписать - сформировать ошибку, но не генерить останов
+					// разбора
+					// e.printStackTrace();
+					err.add("Ошибка разбора поля", "DocDT");
+				}
+				prg.setDocdt(date);
+			} else {
+				prg.setDocdt(null);
+				err.add("DocDT");
+			}
+
+			Element pprg = (Element) root.getElementsByTagName("Prg").item(0);
+			if (pprg != null) {
+				try {
+					prg.setPrg(Integer.parseInt(pprg.getTextContent()));
+				} catch (NumberFormatException e) {
+					err.add("Ошибка формата поля", "Prg");
+				} catch (DOMException e) {
+					err.add("Ошибка поля", "Prg");
+				}
+			} else {
+				prg.setPrg(0);
+				err.add("Prg");
+			}
+
+			Element prgNum1 = (Element) root.getElementsByTagName("PrgNum")
+					.item(0);
+			if (prgNum1 != null) {
+				prg.setPrgnum(prgNum1.getTextContent());
+			} else {
+				prg.setPrgnum("");
+				err.add("PrgNum");
+			}
+
+			Element prgDT = (Element) root.getElementsByTagName("PrgDT")
+					.item(0);
+			if (prgDT != null) {
+				String s = prgDT.getTextContent();
+				Date date = null;
+				try {
+					date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+							.parse(s);
+				} catch (ParseException e) {
+					// Переписать - сформировать ошибку, но не генерить останов
+					// разбора
+					// e.printStackTrace();
+					err.add("Ошибка разбора поля", "PrgDT");
+				}
+				prg.setPrgdt(date);
+			} else {
+				prg.setPrgdt(null);
+				err.add("PrgDT");
+			}
+			Element mseid = (Element) root.getElementsByTagName("MSEID")
+					.item(0);
+			if (mseid != null) {
+				prg.setMseid(mseid.getTextContent());
+			} else {
+				prg.setMseid("");
+				// num_err++; Сейчас я не буду считать это ошибкой!!!
+				// - слишком жестоко и неправильно требовать заполнения с
+				// пользователей!
+			}
+
+			// Установка общих константных полей для ЯО
+			prg.setOivid(1); // Сфера охраны здоровья
+			prg.setOkrId(1); // ЦФО
+			prg.setNreg(76); // ЯО
+
+			if (err.getSize() > 0)
+				return err;
+			if (lPrg.size() == 0) {
+				prgDAO.save(prg);
+			} else { // сохранение
+				;
+				prgDAO.update(lPrg.get(0).getId(),prg);
+
+			}	
+		lPrg = prgDAO.getBySnilsPrgNum(ssnils, snumprg);
+		if (lPrg.size() > 0) { // почему то не сохранилось
+			prg = lPrg.get(0);
+			Element res = (Element) root.getElementsByTagName("ListPRG_RHB")
+					.item(0);
+			Element resprg;
+			Element typeid;
+			Element evntid;
+			Element dicid;
+			Element tsrid;
+			Element excid;
+			if (res != null) {
+				// удалим из базы prg_rhb все рузультаты по данной программе для
+				// конкретной организации
+				// записи о выполнении других организаций оставим!!!
+				int num = prg_rhbDAO.delete(prg.getId(), m);
+				logger.debug("Удалено " + num + " записей из prg_rhb");
+
+				int numprg = root.getElementsByTagName("PRG_RHB").getLength();
+				Element result;
+				for (int i = 0; i < numprg; i++) {
+					prg_rhb.setPrgid(prg.getId());
+
+					typeid = (Element) root.getElementsByTagName("TypeId")
+							.item(i);
+					if (typeid != null) {
+						try {
+							prg_rhb.setTypeid(Integer.parseInt(typeid
+									.getTextContent()));
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "TypeId");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "TypeId");
+						}
+					} else {
+						prg_rhb.setTypeid(0);
+						err.add("TypeId");
+					}
+
+					evntid = (Element) root.getElementsByTagName("EvntId")
+							.item(i);
+					if (typeid != null) {
+						try {
+							prg_rhb.setEvntid(Integer.parseInt(evntid
+									.getTextContent()));
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "EvntId");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "EvntId");
+						}
+					} else {
+						prg_rhb.setEvntid(0);
+						err.add("EvntId");
+					}
+
+					dicid = (Element) root.getElementsByTagName("DicId")
+							.item(i);
+					boolean isdicid = false;
+					if (dicid != null) {
+						try {
+							String s = dicid.getTextContent();
+							if (!s.equals("")) {
+								prg_rhb.setDicid(Integer.parseInt(dicid
+										.getTextContent()));
+								isdicid = true;
+							}
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "DicId");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "DicId");
+						}
+					} else {
+						prg_rhb.setDicid(0);
+						// err.add("DicId");
+						isdicid = false;
+					}
+					Element name = (Element) root.getElementsByTagName("Name")
+							.item(i);
+					if (name != null) {
+						try {
+							String s = name.getTextContent();
+							if (!s.equals("")) {
+								prg_rhb.setName(s);
+							}
+							else {
+								if (!isdicid)
+									err.add("Name");
+							}
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "Name");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "Name");
+						}
+					} else {
+						prg_rhb.setName("");
+						if (!isdicid)
+							err.add("Name");
+					}
+
+					tsrid = (Element) root.getElementsByTagName("TsrId")
+							.item(i);
+					if (tsrid != null) {
+						try {
+							String s = tsrid.getTextContent();
+							if (!s.equals(""))
+								prg_rhb.setTsrid(Integer.parseInt(tsrid
+										.getTextContent()));
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "TsrId");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "TsrId");
+						}
+					} else {
+						prg_rhb.setTsrid(0);
+					}
+
+					excid = (Element) root.getElementsByTagName("Ex_Id")
+							.item(i);
+					if (excid != null) {
+						try {
+							String s = excid.getTextContent();
+							if (!s.equals(""))
+								prg_rhb.setExcid(Integer.parseInt(excid
+										.getTextContent()));
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "Ex_Id");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "Ex_Id");
+						}
+					} else {
+						prg_rhb.setExcid(0);
+						err.add("Ex_Id");
+					}
+					Element execut = (Element) root.getElementsByTagName(
+							"Execut").item(i);
+					if (execut != null) {
+						try {
+							String s = execut.getTextContent();
+							if (!s.equals("")) {
+								prg_rhb.setExecut(s);
+							}
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "Execut");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "Execut");
+						}
+					} else {
+						prg_rhb.setExecut("");
+					}
+
+					Element resid = (Element) root
+							.getElementsByTagName("ResId").item(i);
+					boolean isresid = false;
+					if (resid != null) {
+						try {
+							String s = resid.getTextContent();
+							if (!s.equals("")) {
+								prg_rhb.setResid(Integer.parseInt(resid
+										.getTextContent()));
+								isresid = true;
+							}
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "ResId");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "ResId");
+						}
+					} else {
+						prg_rhb.setResid(0);
+						// err.add("DicId");
+						isresid = false;
+					}
+					result = (Element) root.getElementsByTagName("Result")
+							.item(i);
+					if (result != null) {
+						try {
+							String s = result.getTextContent();
+							if (!s.equals("")) {
+								prg_rhb.setResult(s);
+							}
+							else {
+								if (!isresid)
+									err.add("Result");
+							}
+
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "Result");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "Result");
+						}
+					} else {
+						prg_rhb.setResult("");
+						if (!isresid)
+							err.add("Result");
+					}
+					Element par1 = (Element) root.getElementsByTagName("Par1")
+							.item(i);
+					if (par1 != null) {
+						try {
+							String s = par1.getTextContent();
+							if (!s.equals(""))
+								prg_rhb.setPar1(Integer.parseInt(par1
+										.getTextContent()));
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "Par1");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "Par1");
+						}
+					} else {
+						prg_rhb.setPar1(0);
+					}
+					Element par2 = (Element) root.getElementsByTagName("Par2")
+							.item(i);
+					if (par2 != null) {
+						try {
+							String s = par2.getTextContent();
+							if (!s.equals(""))
+								prg_rhb.setPar2(Integer.parseInt(par2
+										.getTextContent()));
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "Par2");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "Par2");
+						}
+					} else {
+						prg_rhb.setPar2(0);
+					}
+					Element par3 = (Element) root.getElementsByTagName("Par3")
+							.item(i);
+					if (par3 != null) {
+						try {
+							String s = par3.getTextContent();
+							if (!s.equals(""))
+								prg_rhb.setPar3(Integer.parseInt(par3
+										.getTextContent()));
+						} catch (NumberFormatException e) {
+							err.add("Ошибка формата поля", "Par3");
+						} catch (DOMException e) {
+							err.add("Ошибка поля", "Par3");
+						}
+					} else {
+						prg_rhb.setPar3(0);
+					}
+
+					if (err.getSize() > 0)
+						prg_rhbDAO.save(prg_rhb);
+				}
 			}
 		} else {
+			logger.error("Неизвестная ошибка при сохранении программы prg");
 		}
 
-		
-		
-		
-		
-		
-		return num_err;
-		
+		return err;
+
 	}
-
 
 	/*
 	 * MSEFunction - функция обрабатывает очередной XML-файл из МСЭ
 	 */
-	private static void mMSEFunction(IpraFile fileNameObj, MoDAO mo,
+	private static void mSEFunction(IpraFile fileNameObj, MoDAO mo,
 			String sDirComlete, String sDirError, SnilsDAO snils, MseDAO mse) {
 		int newSnils = 0;
 		int oldSnils = 0;
@@ -457,11 +716,12 @@ public class Program {
 						String nameFolder = constructNameFolder(sDirComlete, m
 								.getName().trim());
 
-						if (!isMSE(mse,fileNameObj.namefile)) 
-						    AddRecordMSE(fileNameObj, sn, m, mse);
+						if (!isMSE(mse, fileNameObj.namefile))
+							AddRecordMSE(fileNameObj, sn, m, mse);
 						else
-							logger.info("ИПРА выписка из файла была ранее разнесена:" + fileNameObj.fullpath);
-				
+							logger.info("ИПРА выписка из файла была ранее разнесена:"
+									+ fileNameObj.fullpath);
+
 						logger.info("Перемещаем документ в папку:" + nameFolder);
 						Move(fileNameObj.fullpath, nameFolder, true);
 					}
@@ -469,10 +729,11 @@ public class Program {
 				}
 
 			} else {
-				if (!isMSE(mse,fileNameObj.namefile)) 
-				    AddRecordMSE(fileNameObj, sn, m, mse);
+				if (!isMSE(mse, fileNameObj.namefile))
+					AddRecordMSE(fileNameObj, sn, m, mse);
 				else
-					logger.info("ИПРА выписка из файла была ранее разнесена:" + fileNameObj.fullpath);
+					logger.info("ИПРА выписка из файла была ранее разнесена:"
+							+ fileNameObj.fullpath);
 				logger.info("НЕ Найден СНИЛС в файле ИПРА:" + sSnils);
 			}
 		} else {
@@ -484,13 +745,13 @@ public class Program {
 	}
 
 	// проверка ранее занесенной записи, для предотвращения повторного ввода
-	
+
 	private static boolean isMSE(MseDAO mse, String namefile) {
 		Mse m = mse.getByNameFile(namefile);
-		if( m != null)
+		if (m != null)
 			return true;
 		else
-	  	    return false;
+			return false;
 	}
 
 	// Добавление MSE - выписка моя таблица - для контроля выписок
@@ -502,7 +763,7 @@ public class Program {
 			MseDAO mseDAO) {
 		Mse mse = mseDAO.getByNameFile(fileNameObj.namefile);
 		if (mse == null) {
-			saveFieldsMse(fileNameObj, sn, mo, mseDAO );
+			saveFieldsMse(fileNameObj, sn, mo, mseDAO);
 		}
 
 	}
@@ -538,53 +799,58 @@ public class Program {
 		} else {
 			mse.setSnils("");
 		}
-		Element FNAME = (Element) root.getElementsByTagName("ct:FirstName").item(0);
+		Element FNAME = (Element) root.getElementsByTagName("ct:FirstName")
+				.item(0);
 		if (FNAME != null) {
 			mse.setFname(FNAME.getTextContent());
 		} else {
 			mse.setFname("");
 		}
-		Element SNAME = (Element) root.getElementsByTagName("ct:SecondName").item(0);
+		Element SNAME = (Element) root.getElementsByTagName("ct:SecondName")
+				.item(0);
 		if (SNAME != null) {
 			mse.setSname(SNAME.getTextContent());
 		} else {
 			mse.setSname("");
 		}
-		Element LNAME = (Element) root.getElementsByTagName("ct:LastName").item(0);
+		Element LNAME = (Element) root.getElementsByTagName("ct:LastName")
+				.item(0);
 		if (LNAME != null) {
 			mse.setLname(LNAME.getTextContent());
 		} else {
 			mse.setLname("");
 		}
-		
-		Element BDATE = (Element) root.getElementsByTagName("BirthDate").item(0);
+
+		Element BDATE = (Element) root.getElementsByTagName("BirthDate")
+				.item(0);
 		if (BDATE != null) {
 			String s = BDATE.getTextContent();
 			Date date = null;
 			try {
-				date = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(s);
+				date = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH)
+						.parse(s);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-//			logger.info("Дата рождения:" + date);
+			// logger.info("Дата рождения:" + date);
 			mse.setBdate(date);
 		} else {
 			mse.setBdate(null);
 		}
-		
+
 		mse.setIdMo(mo.getId());
 		mse.setDt(new Date());
 		mse.setNameFile(fileNameObj.namefile);
-		
+
 		mseDAO.save(mse);
 
-		
 	}
 
 	private static String constructNameFolder(String sDaseDir, String sMo) {
 		if (sMo != null) {
 			sMo = sMo.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
+			sMo = sMo.replace("БЮДЖЕТНОЕ", "");
 			sMo = sMo.replace("УЧРЕЖДЕНИЕ", "");
 			sMo = sMo.replace("ЯРОСЛАВСКОЙ", "");
 			sMo = sMo.replace("ОБЛАСТИ", "");
@@ -602,45 +868,43 @@ public class Program {
 		return null;
 	}
 
-	
-	private static void CreateZIPs(String sDirComlete) {
+	private static void CreateZIPs(String sDirComlete, String pref) {
 		FolderIpra folder = new FolderIpraImpl();
 		folder.setPath(sDirComlete);
 		IpraFile fileNameObj = folder.getNextDir();
 
 		while (fileNameObj != null) {
 			logger.info("Папка c МО найдена:" + fileNameObj.fullpath);
-			CreateZIP(fileNameObj.fullpath);
+			CreateZIP(fileNameObj.fullpath, pref);
 			fileNameObj = folder.getNextDir();
 		}
-		
-		
+
 	}
 
-	private static void CreateZIP(String sDirComlete) {
+	private static void CreateZIP(String sDirComlete, String pref) {
 		File directory = new File(sDirComlete);
-		java.util.Calendar calendar = java.util.Calendar.getInstance(java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
+		java.util.Calendar calendar = java.util.Calendar.getInstance(
+				java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
 		int year = calendar.get(java.util.Calendar.YEAR);
-		int month = calendar.get(java.util.Calendar.MONTH)+1;
+		int month = calendar.get(java.util.Calendar.MONTH) + 1;
 		String smonth;
-		if (month<10)
+		if (month < 10)
 			smonth = "0" + month;
 		else
 			smonth = "" + month;
-		
-		File zipFile = new File(sDirComlete +"\\IR_" + (year-2000) + smonth + ".zip");
 
-		
+		File zipFile = new File(sDirComlete + "\\" + pref + "_" + (year - 2000) + smonth
+				+ ".zip");
+
 		try {
 			Zip.directoryToZip(directory, zipFile);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 	}
 
-	
 	private static String getSnils(String fullpath)
 			throws ParserConfigurationException, SAXException, IOException {
 		File f = new File(fullpath);
@@ -733,15 +997,15 @@ public class Program {
 				dirDest.mkdir();
 			}
 		}
-        Move(fullpath, sDirDistination);
+		Move(fullpath, sDirDistination);
 	}
-	
+
 	private static void CreateFolder(String sDirDistination) {
-			File dirDest = new File(sDirDistination);
-			if (dirDest.exists() && dirDest.isDirectory()) {
-			} else {
-				dirDest.mkdir();
-			}
+		File dirDest = new File(sDirDistination);
+		if (dirDest.exists() && dirDest.isDirectory()) {
+		} else {
+			dirDest.mkdir();
+		}
 
 	}
 

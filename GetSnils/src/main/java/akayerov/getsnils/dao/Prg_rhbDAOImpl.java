@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import akayerov.getsnils.models.Mo;
 import akayerov.getsnils.models.Prg;
 import akayerov.getsnils.models.Prg_rhb;
 
@@ -66,6 +67,20 @@ public class Prg_rhbDAOImpl implements Prg_rhbDAO {
         p.setTypeid(s.getTypeid());
         
         em.flush();
+	}
+
+	@Override
+	@Transactional
+	public int delete(int idPrg, Mo mo) {
+		int idmo = mo.getId();
+		int deletedEntities = em.createQuery(
+			    "delete Prg_rhb h " +
+			    "where h.prgid = :par1 and" +
+			    "      h.excid = :par2")
+			.setParameter( "par1", idPrg)
+			.setParameter( "par2",  idmo)
+			.executeUpdate();
+		return deletedEntities;
 	}
 
  

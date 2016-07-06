@@ -45,9 +45,9 @@ public class PrgDAOImpl implements PrgDAO {
 
 	@Override
 	@Transactional
-	public void update(String sid, Prg s) {
+	public void update(int id, Prg s) {
 		// TODO Auto-generated method stub
-        Prg p = em.find( Prg.class, sid );
+        Prg p = em.find( Prg.class, id );
         p.setBdate(s.getBdate());
         p.setDocdt(s.getDocdt());
         p.setDocnum(s.getDocnum());
@@ -80,6 +80,19 @@ public class PrgDAOImpl implements PrgDAO {
 		} catch (Exception e) { // Не найден
 		}
         return pElem;
+	}
+
+	@Override
+	public List<Prg> getBySnilsPrgNum(String snils, String prgNum) {
+		List<Prg>	lPrg = em.createQuery(
+				    "select p " +
+				    "from Prg p " +
+				    "where p.snils  = :par1 and" +
+				    "      p.prgnum = :par2")
+				    .setParameter("par1",snils)
+				    .setParameter("par2",prgNum)
+				    .getResultList();
+		return lPrg;
 	}
  
 }
