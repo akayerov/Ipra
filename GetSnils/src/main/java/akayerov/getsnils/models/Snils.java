@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 import java.sql.Timestamp;
 
@@ -12,6 +14,7 @@ import java.sql.Timestamp;
  * The persistent class for the prg database table.
  * 
  */
+@Component
 @Entity
 public class Snils implements Serializable {
 	private static final long serialVersionUID = 1L;

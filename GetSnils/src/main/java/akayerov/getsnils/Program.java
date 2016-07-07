@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.w3c.dom.DOMException;
@@ -79,12 +80,14 @@ public class Program {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext(
 				"META-INF/beans.xml");
-		SnilsDAO snils = (SnilsDAO) context.getBean("storageSnils");
-		MoDAO mo = (MoDAO) context.getBean("storageMo");
-		PrgDAO prg = (PrgDAO) context.getBean("storagePrg");
-		Prg_rhbDAO prg_rhb = (Prg_rhbDAO) context.getBean("storagePrg_rhb");
+		SnilsDAO snilsDAO = (SnilsDAO) context.getBean("storageSnils");
+		MoDAO moDAO = (MoDAO) context.getBean("storageMo");
+		PrgDAO prgDAO = (PrgDAO) context.getBean("storagePrg");
+		Prg_rhbDAO prg_rhbDAO = (Prg_rhbDAO) context.getBean("storagePrg_rhb");
 		MseDAO mse = (MseDAO) context.getBean("storageMse");
 
+
+		
 		ReaderSnils rd = (ReaderSnils) context.getBean("readerSnils");
 		FolderIpra folder = (FolderIpra) context.getBean("folderSnils");
 
@@ -112,13 +115,13 @@ public class Program {
 		while (fileNameObj != null) {
 
 			if (mode == MODE_SNILS) {
-				getSnilsFunction(fileNameObj, rd, mo, sDirComlete, sDirError,
-						snils);
+				getSnilsFunction(fileNameObj, rd, moDAO, sDirComlete, sDirError,
+						snilsDAO, context);
 			} else if (mode == MODE_MSE)
-				mSEFunction(fileNameObj, mo, sDirComlete, sDirError, snils, mse);
+				mSEFunction(fileNameObj, moDAO, sDirComlete, sDirError, snilsDAO, mse);
 			else if (mode == MODE_RESULT)
-				resultIpraFunction(fileNameObj, mo, sDirComlete, sDirError,
-						snils, prg, prg_rhb);
+				resultIpraFunction(fileNameObj, moDAO, sDirComlete, sDirError,
+						snilsDAO, prgDAO, prg_rhbDAO);
 			fileNameObj = folder.getNextFile(mode);
 		}
 
@@ -941,7 +944,7 @@ public class Program {
 	 * GetSnilsFunction - функция обрабатывает очередной СНИЛС файл
 	 */
 	private static void getSnilsFunction(IpraFile fileNameObj, ReaderSnils rd,
-			MoDAO mo, String sDirComlete, String sDirError, SnilsDAO snils) {
+			MoDAO mo, String sDirComlete, String sDirError, SnilsDAO snils, BeanFactory context) {
 		int newSnils = 0;
 		int oldSnils = 0;
 		if (!fileNameObj.ogrn.equals("999999999")) { // не ошибка
@@ -967,7 +970,9 @@ public class Program {
 					// logger.info(s);
 					Snils sn = snils.getById(s);
 					if (sn == null) {
-						sn = new Snils();
+						//sn = new Snils();
+						sn = (Snils) context.getBean(Snils.class);
+
 						sn.setSnils(s);
 						sn.setOgrn(fileNameObj.ogrn);
 						snils.save(sn);
