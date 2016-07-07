@@ -659,21 +659,6 @@ public class Program {
 					} else {
 						prg_rhb.setPar3(0);
 					}
-					Element note = (Element) root.getElementsByTagName("Note")
-							.item(i);
-					if (result != null) {
-						try {
-							String s = result.getTextContent();
-							if (!s.equals("")) {
-								prg_rhb.setNote(s);
-							}
-
-						} catch (NumberFormatException e) {
-							err.add("Ошибка формата поля", "Note");
-						} catch (DOMException e) {
-							err.add("Ошибка поля", "Note");
-						}
-					} 
 
 					if (err.getSize() > 0)
 						prg_rhbDAO.save(prg_rhb);

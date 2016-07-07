@@ -5,7 +5,33 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2016-07-05T12:23:55Z</updated>
+  <updated>2016-07-06T08:50:11Z</updated>
+  <entry>
+    <title>Spring Tool Suite 3.8.0 released</title>
+    <link rel="alternate" href="https://spring.io/blog/2016/07/06/spring-tool-suite-3-8-0-released" />
+    <category term="releases" label="Releases" />
+    <author>
+      <name>Martin Lippert</name>
+    </author>
+    <id>tag:spring.io,2016-07-06:2546</id>
+    <updated>2016-07-06T08:50:11Z</updated>
+    <content type="html">&lt;p&gt;Dear Spring Community,&lt;/p&gt;
+&lt;p&gt;I am happy to announce the 3.8.0 release of the Spring Tool Suite, our Eclipse-based tooling.&lt;/p&gt;
+&lt;p&gt;Highlights from this release include:&lt;/p&gt;
+&lt;ul&gt;&#xD;
+&lt;li&gt;updated to Eclipse Neon 4.6 GA&lt;/li&gt;&#xD;
+&lt;li&gt;all new Spring Boot code templates&lt;/li&gt;&#xD;
+&lt;li&gt;improved Spring Boot YML and property editors (more advanced content-assist, quick-fixes, and more)&lt;/li&gt;&#xD;
+&lt;li&gt;many small improvements to improve developer productivity&lt;/li&gt;&#xD;
+&lt;li&gt;Pivotal tc Server updated to 3.1.4&lt;/li&gt;&#xD;
+&lt;/ul&gt;
+&lt;p&gt;To download the distributions, please go visit:&lt;/p&gt;
+&lt;ul&gt;&#xD;
+&lt;li&gt;Spring Tool Suite: &lt;a href="https://spring.io/tools/sts/all"&gt;https://spring.io/tools/sts/all&lt;/a&gt;&lt;/li&gt;&#xD;
+&lt;/ul&gt;
+&lt;p&gt;Detailed new and noteworthy notes can be found here: &lt;a href="http://docs.spring.io/sts/nan/v380/NewAndNoteworthy.html"&gt;STS 3.8.0 New &amp;amp; Noteworthy&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Enjoy!&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>Spring Boot 1.4.0.RC1 available now</title>
     <link rel="alternate" href="https://spring.io/blog/2016/07/05/spring-boot-1-4-0-rc1-available-now" />
@@ -737,29 +763,5 @@ public class SpringBootVaultHelloWorldApplication {&#xD;
 &lt;/ul&gt;
 &lt;p&gt;The release will be included in the upcoming Spring Boot 1.4.0 RC1 release which should make the upgrade a non-issue. If you’re using the BOM, make sure you upgrade to &lt;code&gt;Hopper-SR2&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;In case you missed it: a huge chunk of the program for this year&amp;rsquo;s SpringOne Platform conference is already live on the &lt;a href="http://springoneplatform.io/"&gt;event website&lt;/a&gt;. We&amp;rsquo;re going to cover data related topics from a variety of angles. A discounted ticket price is still offered until July 1st, so use the chance to save a couple of bucks (not bugs!) and &lt;a href="https://2016.event.springoneplatform.io/register"&gt;register&lt;/a&gt;.&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring Cloud Brixton.SR1 is available</title>
-    <link rel="alternate" href="https://spring.io/blog/2016/06/14/spring-cloud-brixton-sr1-is-available" />
-    <category term="releases" label="Releases" />
-    <author>
-      <name>Spencer Gibb</name>
-    </author>
-    <id>tag:spring.io,2016-06-14:2527</id>
-    <updated>2016-06-14T20:11:00Z</updated>
-    <content type="html">&lt;p&gt;On behalf of the team, I am pleased to announce that Service Release 1 of the &lt;a href="http://cloud.spring.io"&gt;Spring Cloud Brixton&lt;/a&gt; Release Train is available today. The release can be found in our &lt;a href="http://repo.spring.io/release"&gt;Spring Release repository&lt;/a&gt; and &lt;a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-cloud-dependencies%22"&gt;Maven Central&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;This is primarily a bug fix release with a few small features. Of particular note is a change that allows Brixton Eureka Servers to work with Angel Eureka clients.&lt;/p&gt;&lt;h4&gt;&lt;a href="#the-following-modules-were-updated-as-part-of-brixton-sr1" class="anchor" name="the-following-modules-were-updated-as-part-of-brixton-sr1"&gt;&lt;/a&gt;The following modules were updated as part of Brixton.SR1:&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Spring Cloud Commons &lt;a href="https://github.com/spring-cloud/spring-cloud-commons/issues?q=milestone:1.1.1"&gt;1.1.1.RELEASE&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Spring Cloud Config &lt;a href="https://github.com/spring-cloud/spring-cloud-config/issues?q=milestone:1.1.1"&gt;1.1.1.RELEASE&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Spring Cloud Consul &lt;a href="https://github.com/spring-cloud/spring-cloud-consul/issues?q=milestone:1.0.1"&gt;1.0.1.RELEASE&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Spring Cloud Netflix &lt;a href="https://github.com/spring-cloud/spring-cloud-netflix/issues?q=milestone:1.1.1"&gt;1.1.1.RELEASE&lt;/a&gt; &amp;amp; &lt;a href="https://github.com/spring-cloud/spring-cloud-netflix/issues?q=milestone:1.1.2"&gt;1.1.2.RELEASE&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Spring Cloud Sleuth &lt;a href="https://github.com/spring-cloud/spring-cloud-sleuth/issues?q=milestone:1.0.1"&gt;1.0.1.RELEASE&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Spring Cloud Stream &lt;a href="https://github.com/spring-cloud/spring-cloud-stream/issues?q=milestone:1.0.2.RELEASE"&gt;1.0.2.RELEASE&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Spring Cloud Zookeeper &lt;a href="https://github.com/spring-cloud/spring-cloud-zookeeper/issues?q=milestone:1.0.1"&gt;1.0.1.RELEASE&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;And, as always, we welcome feedback: either on &lt;a href="https://github.com/spring-cloud"&gt;GitHub&lt;/a&gt;, on &lt;a href="https://gitter.im/spring-cloud/spring-cloud"&gt;gitter&lt;/a&gt;, on &lt;a href="http://stackoverflow.com/questions/tagged/spring-cloud"&gt;Stack Overflow&lt;/a&gt;, or on &lt;a href="https://twitter.com/SpringCloudOSS"&gt;Twitter&lt;/a&gt;.&lt;/p&gt;
-&lt;hr/&gt;
-&lt;p&gt;The Spring Cloud team will be talking about Spring Cloud at &lt;a href="http://springoneplatform.io"&gt;Spring One Platform&lt;/a&gt;, which will be taking place in Las Vegas between August 1-4 this year. There are many other great talks so &lt;a href="https://2016.event.springoneplatform.io/schedule/sessions"&gt;check the agenda&lt;/a&gt; and &lt;a href="https://2016.event.springoneplatform.io/register"&gt;get your ticket&lt;/a&gt; if you haven’t done so already. &lt;/p&gt;</content>
   </entry>
 </feed>
