@@ -3,13 +3,16 @@ package akayerov.getsnils;
 
 import java.io.File;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import akayerov.getsnils.IpraFile;
-
-@Repository
-@Service("folderSnils")
+// Тест объекта сделать по другому способу через configuration и bean
+//@Repository
+//@Service("folderSnils")
+@Configuration
 public class FolderIpraImpl implements FolderIpra {
 	File folder;
 	private File[] fList;
@@ -17,6 +20,13 @@ public class FolderIpraImpl implements FolderIpra {
 	public FolderIpraImpl() {
     	
     }
+// тестовая функция см выше для создания bean
+	@Bean
+	public FolderIpraImpl folder() {
+		return new FolderIpraImpl();
+	}
+// конец	
+	
 	@Override
 	public IpraFile getNextFile(int mode) {
       while(idx < fList.length) {

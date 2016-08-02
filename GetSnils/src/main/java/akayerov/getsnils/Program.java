@@ -89,7 +89,8 @@ public class Program {
 
 		
 		ReaderSnils rd = (ReaderSnils) context.getBean("readerSnils");
-		FolderIpra folder = (FolderIpra) context.getBean("folderSnils");
+//		FolderIpra folder = (FolderIpra) context.getBean("folderSnils");  другим способом определен bean -это тест для разнообразия
+		FolderIpra folder = (FolderIpra) context.getBean("folder");
 
 		String sDirComlete = args[1] + "\\" + DIR_COMLETE;
 		File dirComlete = new File(sDirComlete);
@@ -127,11 +128,11 @@ public class Program {
 
 		if (mode == MODE_MSE) {
 			logger.info("Создание Zip архивов:");
-			CreateZIPs(sDirComlete,"IR");
+			CreateZIPs(sDirComlete,"IR", context);
 		}
 		else if (mode == MODE_RESULT) {
 				logger.info("Создание Zip архивов:");
-				CreateZIPs(sDirError,"ERROR");
+				CreateZIPs(sDirError,"ERROR", context);
 		}
 	}
 
@@ -416,7 +417,7 @@ public class Program {
 			if (lPrg.size() == 0) {
 				prgDAO.save(prg);
 			} else { // сохранение
-				;
+				
 				prgDAO.update(lPrg.get(0).getId(),prg);
 
 			}	
@@ -678,7 +679,7 @@ public class Program {
 						}
 					} 
 
-					if (err.getSize() > 0)
+					if (err.getSize() == 0)
 						prg_rhbDAO.save(prg_rhb);
 				}
 			}
@@ -745,6 +746,15 @@ public class Program {
 					}
 
 				}
+				else  { // 02/08/2016 СНИЛС в таблице не найден - все равно запись в 	базе создаем!! - так удобнее считать файлы выписок
+					if (!isMSE(mse, fileNameObj.namefile))
+						AddRecordMSE(fileNameObj, sn, m, mse);
+					else
+						logger.info("ИПРА выписка из файла была ранее разнесена:"
+								+ fileNameObj.fullpath);
+					logger.info("Не найден СНИЛС в таблице SNILS:" + sSnils);
+					
+				}
 
 			} else {
 				if (!isMSE(mse, fileNameObj.namefile))
@@ -752,7 +762,7 @@ public class Program {
 				else
 					logger.info("ИПРА выписка из файла была ранее разнесена:"
 							+ fileNameObj.fullpath);
-				logger.info("НЕ Найден СНИЛС в файле ИПРА:" + sSnils);
+				logger.info("Не найден СНИЛС в файле ИПРА:" + sSnils);
 			}
 		} else {
 			logger.error("Неправильное имя файла:" + fileNameObj.fullpath);
@@ -839,13 +849,13 @@ public class Program {
 			mse.setLname("");
 		}
 
-		Element BDATE = (Element) root.getElementsByTagName("BirthDate")
-				.item(0);
+		Element BDATE = (Element) root.getElementsByTagName("BirthDate").item(0);
+
 		if (BDATE != null) {
 			String s = BDATE.getTextContent();
 			Date date = null;
 			try {
-				date = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH)
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
 						.parse(s);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -857,10 +867,34 @@ public class Program {
 			mse.setBdate(null);
 		}
 
-		mse.setIdMo(mo.getId());
+		Element PRGDATE = (Element) root.getElementsByTagName("ProtocolDate").item(0);
+
+		if (PRGDATE != null) {
+			String s = PRGDATE.getTextContent();
+			Date date = null;
+			try {
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+						.parse(s);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		   logger.info("Дата протокола:" + date);
+			mse.setPrgdate(date);
+		} else {
+			mse.setPrgdate(null);
+		}
+
+		
+		if(mo != null)
+		   mse.setIdMo(mo.getId());
+		else
+ 	       mse.setIdMo(0);
 		mse.setDt(new Date());
 		mse.setNameFile(fileNameObj.namefile);
 
+		mse.setComplete(false);
+	
 		mseDAO.save(mse);
 
 	}
@@ -886,8 +920,9 @@ public class Program {
 		return null;
 	}
 
-	private static void CreateZIPs(String sDirComlete, String pref) {
-		FolderIpra folder = new FolderIpraImpl();
+	private static void CreateZIPs(String sDirComlete, String pref, BeanFactory context) {
+//		FolderIpra folder = new FolderIpraImpl();
+		FolderIpra folder =  (FolderIpra) context.getBean("folder");
 		folder.setPath(sDirComlete);
 		IpraFile fileNameObj = folder.getNextDir();
 

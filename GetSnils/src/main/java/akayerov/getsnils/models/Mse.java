@@ -47,6 +47,11 @@ public class Mse implements Serializable {
 	@Column(name="nmfile", columnDefinition="bpchar")
 	private String nmfile;
 
+	@Temporal(TemporalType.DATE)
+	private Date prgdate;
+
+	private boolean complete;
+
 
 	public Mse() {
 	}
@@ -135,6 +140,30 @@ public class Mse implements Serializable {
 	}
 
 	
+	public String getNmfile() {
+		return nmfile;
+	}
+
+	public void setNmfile(String nmfile) {
+		this.nmfile = nmfile;
+	}
+
+	public Date getPrgdate() {
+		return prgdate;
+	}
+
+	public void setPrgdate(Date prgdate) {
+		this.prgdate = prgdate;
+	}
+
+	public boolean isComplete() {
+		return complete;
+	}
+
+	public void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+
 	@Override
      public String toString(){
 	       return "id="+id+", fname="+fname + ", sname="+sname +", lname="+lname;
