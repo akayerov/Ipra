@@ -251,7 +251,9 @@ public class Program {
 			prg.setSnils(ssnils);
 		} else {
 			prg.setSnils("");
-			err.add("Snils");
+// Разрешаю вводить результат без СНИЛС, в дальнейшем запись буду индентифицироыввть как
+// Фамилия + Дара рождения + Дата программы ИПРА			
+//			err.add("Snils");
 		}
 		Element prgNum = (Element) root.getElementsByTagName("PrgNum").item(0);
 		if (prgNum != null) {
@@ -520,6 +522,27 @@ public class Program {
 							err.add("Name");
 					}
 
+					Element dt_exc = (Element) root.getElementsByTagName("Dt_Exc")
+							.item(0);
+					if (dt_exc != null) {
+						String s = dt_exc.getTextContent();
+						Date date = null;
+						try {
+							date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+									.parse(s);
+						} catch (ParseException e) {
+							// Переписать - сформировать ошибку, но не генерить останов
+							// разбора
+							// e.printStackTrace();
+							err.add("Ошибка разбора поля", "Dt_Exc");
+						}
+						prg_rhb.setDt_exc(date);
+					} else {
+						prg_rhb.setDt_exc(null);
+						err.add("Dt_Exc");
+					}
+
+
 					tsrid = (Element) root.getElementsByTagName("TsrId")
 							.item(i);
 					if (tsrid != null) {
@@ -737,10 +760,11 @@ public class Program {
 
 						if (!isMSE(mse, fileNameObj.namefile))
 							AddRecordMSE(fileNameObj, sn, m, mse);
-						else
+						else {
+							UpdateRecordMSE(fileNameObj, sn, m, mse);
 							logger.info("ИПРА выписка из файла была ранее разнесена:"
 									+ fileNameObj.fullpath);
-
+						}
 						logger.info("Перемещаем документ в папку:" + nameFolder);
 						Move(fileNameObj.fullpath, nameFolder, true);
 					}
@@ -770,6 +794,17 @@ public class Program {
 		}
 		logger.info("ИПРА выписка обработана---------------------------");
 
+	}
+
+// update MSE - установка МО
+	private static void UpdateRecordMSE(IpraFile fileNameObj, Snils sn, Mo m,
+			MseDAO mse) {
+		Mse ms = mse.getByNameFile(fileNameObj.namefile);
+		if (m != null) {
+			ms.setIdMo(m.getId());
+			mse.update(ms.getId(), ms);
+		}
+		
 	}
 
 	// проверка ранее занесенной записи, для предотвращения повторного ввода

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import akayerov.getsnils.models.Mo;
+import akayerov.getsnils.models.Mse;
 import akayerov.getsnils.models.Prg;
 import akayerov.getsnils.models.Prg_rhb;
 
@@ -29,9 +30,42 @@ public class Prg_rhbDAOImpl implements Prg_rhbDAO {
     @Transactional
     public void save(Prg_rhb p) {
     	 em.persist(p);    
+         set_complete(p);
     }
  
-    @SuppressWarnings("unchecked")
+    private void set_complete(Prg_rhb rhb) {
+    	int id =  rhb.getPrgid();
+        Prg p = em.find( Prg.class, rhb.getPrgid() );
+		if( p != null ) {
+               String snils = p.getSnils().trim();
+               
+			   if(!snils.equals("")) {
+			    	em.createQuery(
+				    "update Mse m " +
+				    "set m.complete = True " +
+				    "where m.snils = :par1 and " +
+				    "      m.prgdate =:par2")
+				.setParameter( "par1", snils)
+				.setParameter( "par2", p.getPrgdt())
+				.executeUpdate();
+			    	
+			    }
+			    else
+			    	em.createQuery(
+				    "update Mse m " +
+				    "set m.complete = True " +
+				    "where m.lname = :par1 and " +
+				    "      m.bdate = :par2 and " +
+				    "      m.prgdate=:par3 " )
+				.setParameter( "par1", p.getLname().trim())
+				.setParameter( "par2", p.getBdate())
+				.setParameter( "par3", p.getPrgdt())
+				.executeUpdate();
+		}	
+		
+	}
+
+	@SuppressWarnings("unchecked")
     @Override
     public List<Prg_rhb> list() {
         return em.createQuery("from Prg_rhb", Prg_rhb.class).getResultList();

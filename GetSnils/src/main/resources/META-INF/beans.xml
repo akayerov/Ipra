@@ -15,7 +15,8 @@
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://192.168.65.7:5432/MSE_TEST"/>
+<!--         <property name="url" value="jdbc:postgresql://192.168.65.7:5432/MSE_TEST"/> -->
+        <property name="url" value="jdbc:postgresql://192.168.65.7:5432/MSE"/>
         <property name="username" value="postgres"/>
         <property name="password" value="qwerty7"/>
     </bean>

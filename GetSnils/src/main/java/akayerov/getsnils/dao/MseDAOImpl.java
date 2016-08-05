@@ -45,9 +45,9 @@ public class MseDAOImpl implements MseDAO {
 
 	@Override
 	@Transactional
-	public void update(String sid, Mse s) {
+	public void update(int id, Mse s) {
 		// TODO Auto-generated method stub
-        Mse p = em.find( Mse.class, sid );
+        Mse p = em.find( Mse.class, id );
         p.setBdate(s.getBdate());
         p.setDt(s.getDt());
         p.setFname(s.getFname());
