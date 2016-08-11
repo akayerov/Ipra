@@ -90,5 +90,10 @@ public class MseDAOImpl implements MseDAO {
 		}
         return pElem;
 	}
+
+	@Override
+	public List<Mse> listNotMo() {
+        return em.createQuery("from Mse m where m.idMo = 0 order by m.lname,m.fname,m.sname", Mse.class).getResultList();
+	}
  
 }

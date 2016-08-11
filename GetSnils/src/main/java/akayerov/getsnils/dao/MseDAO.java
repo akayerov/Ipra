@@ -12,4 +12,5 @@ public interface MseDAO {
     public Mse getById(int i);
 	public Mse getBySnils(String snils);
 	public Mse getByNameFile(String namefile);
+    public List<Mse> listNotMo();
 }

@@ -49,15 +49,19 @@ public class Program {
 	public static final int MODE_SNILS = 1;
 	public static final int MODE_MSE = 2;
 	public static final int MODE_RESULT = 3;
+	public static final int MODE_LISTNOTMO = 4;
+	public static final int MODE_FIMODE = 5;
 	private static int mode;
 
 	public static void main(String[] args) {
 
 		if (args.length != 2) {
-			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
+			logger.error("Usage: java  -jar ipra -<svrlf> <directory with worked file>");
 			logger.error("                       -s work with SNILS");
 			logger.error("                       -v work with XML files from MSE");
 			logger.error("                       -r work with XML files from MO");
+			logger.error("                       -l make list ipra witch not MO");
+			logger.error("                       -f <dir fieles FI-YYMM_OGRN.txt from MO> <dir XML MSE>  work with XML files from MSE - part2");
 			return;
 		}
 		mode = MODE_UNKNOWN;
@@ -67,6 +71,10 @@ public class Program {
 			mode = MODE_MSE;
 		if (args[0].equals("-r"))
 			mode = MODE_RESULT;
+		if (args[0].equals("-l"))
+			mode = MODE_LISTNOTMO;
+		if (args[0].equals("-f"))
+			mode = MODE_FIMODE;
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
 			return;
@@ -91,6 +99,7 @@ public class Program {
 		ReaderSnils rd = (ReaderSnils) context.getBean("readerSnils");
 //		FolderIpra folder = (FolderIpra) context.getBean("folderSnils");  другим способом определен bean -это тест для разнообразия
 		FolderIpra folder = (FolderIpra) context.getBean("folder");
+		IpraListNotMo listNotMo = (IpraListNotMo) context.getBean("listNotMo");
 
 		String sDirComlete = args[1] + "\\" + DIR_COMLETE;
 		File dirComlete = new File(sDirComlete);
@@ -120,6 +129,8 @@ public class Program {
 						snilsDAO, context);
 			} else if (mode == MODE_MSE)
 				mSEFunction(fileNameObj, moDAO, sDirComlete, sDirError, snilsDAO, mse);
+// 		    else if (mode == MODE_MSE)
+//			    getIpraFIOFunction(fileNameObj, moDAO, sDirComlete, sDirError, mse);
 			else if (mode == MODE_RESULT)
 				resultIpraFunction(fileNameObj, moDAO, sDirComlete, sDirError,
 						snilsDAO, prgDAO, prg_rhbDAO);
@@ -134,12 +145,18 @@ public class Program {
 				logger.info("Создание Zip архивов:");
 				CreateZIPs(sDirError,"ERROR", context);
 		}
+		else if (mode == MODE_LISTNOTMO) {
+			logger.info("Create List IPRA not MO:");
+			listNotMo.run(mse,args[1]);
+			logger.info("Complete");
+		}
 	}
+
+
 
 	/*
 	 * resultIpraFunction - обработка результатов ИПРА
 	 */
-
 	private static void resultIpraFunction(IpraFile fileNameObj, MoDAO mo,
 			String sDirComlete, String sDirError, SnilsDAO snils,
 			PrgDAO prgDAO, Prg_rhbDAO prg_rhb) {
