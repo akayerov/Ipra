@@ -36,6 +36,7 @@ import akayerov.getsnils.models.Mse;
 import akayerov.getsnils.models.Prg;
 import akayerov.getsnils.models.Prg_rhb;
 import akayerov.getsnils.models.Snils;
+import akayerov.report.ReportRes;
 
 public class Program {
 
@@ -153,8 +154,9 @@ public class Program {
 			CreateZIPs(sDirComlete,"IR", context);
 		}
 		else if (mode == MODE_RESULT) {
+				ReportRes.run(mse,moDAO,sDirComlete);
 				logger.info("Создание Zip архивов:");
-				CreateZIPs(sDirError,"ERROR", context);
+				CreateZIPs(sDirError,"ERROR", context);	
 		}
 		else if (mode == MODE_LISTNOTMO) {
 			logger.info("Create List IPRA not MO:");
@@ -1028,7 +1030,7 @@ public class Program {
 
 	}
 
-	private static String constructNameFolder(String sDaseDir, String sMo) {
+	public static String constructNameFolder(String sDaseDir, String sMo) {
 		if (sMo != null) {
 			sMo = sMo.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
 			sMo = sMo.replace("БЮДЖЕТНОЕ", "");
