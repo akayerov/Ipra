@@ -51,6 +51,7 @@ public class Program {
 	public static final int MODE_RESULT = 3;
 	public static final int MODE_LISTNOTMO = 4;
 	public static final int MODE_FIMODE = 5;
+	public static final int MODE_SETMSEID = 6;
 	private static int mode;
 
 	public static void main(String[] args) {
@@ -62,6 +63,7 @@ public class Program {
 			logger.error("                       -r work with XML files from MO");
 			logger.error("                       -l make list ipra witch not MO");
 			logger.error("                       -f <dir fieles FI-YYMM_OGRN.txt from MO> <dir XML MSE>  work with XML files from MSE - part2");
+			logger.error("                       -ms set mseid from source XML");
 			return;
 		}
 		mode = MODE_UNKNOWN;
@@ -75,6 +77,9 @@ public class Program {
 			mode = MODE_LISTNOTMO;
 		if (args[0].equals("-f"))
 			mode = MODE_FIMODE;
+		if (args[0].equals("-ms")) {
+			mode = MODE_SETMSEID;
+		}
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
 			return;
@@ -119,9 +124,15 @@ public class Program {
 			dirError.mkdir();
 		}
 
+		
+		if( mode == MODE_SETMSEID) {
+			setMSEid(args[1], mse);
+			return;
+		}
+		
 		folder.setPath(args[1]);
 		IpraFile fileNameObj = folder.getNextFile(mode);
-
+        
 		while (fileNameObj != null) {
 
 			if (mode == MODE_SNILS) {
@@ -151,6 +162,66 @@ public class Program {
 			logger.info("Complete");
 		}
 	}
+
+
+
+	private static void setMSEid(String path, MseDAO mseDAO) {
+    // для однократного выполнения - расставляем для уже обработанных файлов *. xml код MSEID в таблицу mse4    
+        // определяем объект для каталога
+        Mse mse;
+		File dir = new File(path);
+        // если объект представляет каталог
+        if(dir.isDirectory())
+        {
+            // получаем все вложенные объекты в каталоге
+            for(File item : dir.listFiles()){
+                 if(item.isDirectory()){
+                     System.out.println(item.getName() + "  \tкаталог");
+                     for(File item1 : item.listFiles()){
+                         System.out.println(item1.getName() + "\tфайл");
+              			 String s = item1.getName(); 
+            			 int pos_end   = s.lastIndexOf(".", s.length());
+            			 String type = s.substring(pos_end+1).toUpperCase();
+            			 if(type.equals("XML")) {
+            					File f = new File(item1.getAbsolutePath());
+            					mse = mseDAO.getByNameFile(item1.getName());
+            					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            					DocumentBuilder builder = null;
+            					try {
+            						builder = factory.newDocumentBuilder();
+            					} catch (ParserConfigurationException e) {
+            						// TODO Auto-generated catch block
+            						e.printStackTrace();
+            					}
+            					Document document = null;
+            					try {
+            						document = builder.parse(f);
+            					} catch (SAXException e) {
+            						// TODO Auto-generated catch block
+            						e.printStackTrace();
+            					} catch (IOException e) {
+            						// TODO Auto-generated catch block
+            						e.printStackTrace();
+            					}
+            					Element root = document.getDocumentElement();
+
+            					Element MSEID = (Element) root.getElementsByTagName("Id").item(0);
+            					if (MSEID != null) {
+            						mse.setMseid(MSEID.getTextContent());
+            						mseDAO.update(mse.getId(),mse);
+            					} else {
+            						mse.setMseid("");
+            					}
+            			 }
+                     }
+                     
+                 }
+                 else{
+                     System.out.println(item.getName() + "\tфайл");
+                 }
+             }
+        }
+    }
 
 
 
@@ -218,7 +289,6 @@ public class Program {
 		String ssnils = "";
 		String snumprg = "";
 		Prg prg = new Prg();
-		Prg_rhb prg_rhb = new Prg_rhb();
 
 		File f = new File(fileNameObj.fullpath);
 
@@ -461,6 +531,7 @@ public class Program {
 				int numprg = root.getElementsByTagName("PRG_RHB").getLength();
 				Element result;
 				for (int i = 0; i < numprg; i++) {
+					Prg_rhb prg_rhb = new Prg_rhb();
 					prg_rhb.setPrgid(prg.getId());
 
 					typeid = (Element) root.getElementsByTagName("TypeId")
@@ -935,6 +1006,12 @@ public class Program {
 			mse.setPrgdate(date);
 		} else {
 			mse.setPrgdate(null);
+		}
+		Element MSEID = (Element) root.getElementsByTagName("Id").item(0);
+		if (MSEID != null) {
+			mse.setMseid(MSEID.getTextContent());
+		} else {
+			mse.setMseid("");
 		}
 
 		

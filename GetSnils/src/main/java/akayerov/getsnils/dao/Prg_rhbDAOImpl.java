@@ -37,8 +37,17 @@ public class Prg_rhbDAOImpl implements Prg_rhbDAO {
     	int id =  rhb.getPrgid();
         Prg p = em.find( Prg.class, rhb.getPrgid() );
 		if( p != null ) {
-               String snils = p.getSnils().trim();
-               
+// 22.08.2016 Основной способ отметить выполненную программу - черед MseId
+			    em.createQuery(
+				    "update Mse m " +
+				    "set m.complete = True " +
+				    "where m.mseid = :par1")
+				.setParameter( "par1", p.getMseid().trim().toLowerCase())
+				.executeUpdate();
+
+			
+			   String snils = p.getSnils().trim();
+                                             
 			   if(!snils.equals("")) {
 			    	em.createQuery(
 				    "update Mse m " +
@@ -61,6 +70,7 @@ public class Prg_rhbDAOImpl implements Prg_rhbDAO {
 				.setParameter( "par2", p.getBdate())
 				.setParameter( "par3", p.getPrgdt())
 				.executeUpdate();
+			   
 		}	
 		
 	}

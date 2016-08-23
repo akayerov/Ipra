@@ -51,6 +51,8 @@ public class Mse implements Serializable {
 	private Date prgdate;
 
 	private boolean complete;
+	@Column(name="mseid", columnDefinition="bpchar")
+	private String mseid;
 
 
 	public Mse() {
@@ -162,6 +164,15 @@ public class Mse implements Serializable {
 
 	public void setComplete(boolean complete) {
 		this.complete = complete;
+	}
+	
+
+	public String getMseid() {
+		return mseid;
+	}
+
+	public void setMseid(String mseid) {
+		this.mseid = mseid;
 	}
 
 	@Override
