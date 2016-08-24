@@ -56,6 +56,7 @@ public class Program {
 	public static final int MODE_СREMOFOLDER = 5;
 	public static final int MODE_SETMSEID = 6;
 	public static final int MODE_SETVSNILS = 7;
+	public static final int MODE_TEST = 8;
 	private static int mode;
 
 	public static void main(String[] args) {
@@ -88,6 +89,8 @@ public class Program {
 			mode = MODE_SETVSNILS;
 		if (args[0].equals("-f")) 
 			mode = MODE_СREMOFOLDER;
+		if (args[0].equals("-t")) 
+			mode = MODE_TEST;
 		
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
@@ -149,6 +152,12 @@ public class Program {
 			logger.info("Done");
 		    if(  mode == MODE_СREMOFOLDER )
 			  return;
+		}
+		else if( mode == MODE_TEST || mode == MODE_RESULT) {
+			Zip.ZipExtract(args[1]);
+			logger.info("Done");
+		    if(  mode == MODE_TEST )
+			   return;
 		}
  
 			

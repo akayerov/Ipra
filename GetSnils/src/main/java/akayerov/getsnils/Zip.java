@@ -9,8 +9,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Deque;
+import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 public class Zip {
@@ -20,6 +23,8 @@ public class Zip {
         queue.push(directory);
         OutputStream out = new FileOutputStream(zipFile);
         Closeable res = out;
+
+        System.out.println("Extract from Zip Files");
       
         try {
             ZipOutputStream zout = new ZipOutputStream(out);
@@ -62,4 +67,50 @@ public class Zip {
             res.close();
         }
     }
+
+	public static void ZipExtract(String sFolder) {
+   	   File dirSrc = new File(sFolder);    	 
+  	   File[] fl = dirSrc.listFiles();
+  	   for(int i=0; i< fl.length; i++) {
+  		   if(fl[i].isFile()) {
+  			  String sname =  fl[i].getName().toLowerCase();
+  			  if(sname.endsWith(".zip")) {
+	  		        System.out.println(fl[i].getName());
+	  		        try {
+						unpack(fl[i].getAbsolutePath(),sFolder);
+						fl[i].delete();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+  			  }  
+  		   }   
+  	   }
+	}
+
+	   private static void unpack(String path, String dir_to) throws IOException {
+	  	    ZipFile zip = new ZipFile(path);
+	  	    Enumeration entries = zip.entries();
+	  	    LinkedList<ZipEntry> zfiles = new LinkedList<ZipEntry>();
+	  	    while (entries.hasMoreElements()) {
+	  	      ZipEntry entry = (ZipEntry) entries.nextElement();
+	  	      if (entry.isDirectory()) {
+	  	        new File(dir_to+"/"+entry.getName()).mkdir();
+	  	      } else {
+	  	        zfiles.add(entry);
+	  	      }
+	  	    }
+	  	    for (ZipEntry entry : zfiles) {
+	  	      InputStream in = zip.getInputStream(entry);
+	  	      OutputStream out = new FileOutputStream(dir_to+"/"+entry.getName());
+	  	      byte[] buffer = new byte[1024];
+	  	      int len;
+	  	      while ((len = in.read(buffer)) >= 0)
+	  	        out.write(buffer, 0, len);
+	  	      in.close();
+	  	      out.close();
+	  	      }
+	  	    zip.close();
+	  	  }
+
 }
