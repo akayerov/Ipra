@@ -144,10 +144,11 @@ public class Program {
 			logger.info("Done");
 			return;
 		}
-		else if( mode == MODE_СREMOFOLDER) {
+		else if( mode == MODE_СREMOFOLDER || mode == MODE_MSE) {
 			CreateFolderAllMo.run(sDirComplete, moDAO);
 			logger.info("Done");
-			return;
+		    if(  mode == MODE_СREMOFOLDER )
+			  return;
 		}
  
 			
