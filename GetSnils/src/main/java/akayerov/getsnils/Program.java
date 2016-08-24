@@ -36,6 +36,7 @@ import akayerov.getsnils.models.Mse;
 import akayerov.getsnils.models.Prg;
 import akayerov.getsnils.models.Prg_rhb;
 import akayerov.getsnils.models.Snils;
+import akayerov.report.CreateFolderAllMo;
 import akayerov.report.ReportRes;
 import akayerov.report.VirtSnils;
 
@@ -52,7 +53,7 @@ public class Program {
 	public static final int MODE_MSE = 2;
 	public static final int MODE_RESULT = 3;
 	public static final int MODE_LISTNOTMO = 4;
-	public static final int MODE_FIMODE = 5;
+	public static final int MODE_СREMOFOLDER = 5;
 	public static final int MODE_SETMSEID = 6;
 	public static final int MODE_SETVSNILS = 7;
 	private static int mode;
@@ -64,9 +65,12 @@ public class Program {
 			logger.error("                       -s work with SNILS set default folder SNILS)");
 			logger.error("                       -v work with XML files from MSE (set default folder FROM_MSE)");
 			logger.error("                       -r work with XML files from MO set default folder RESULT)");
+			logger.error(" ");
 			logger.error("                       -l make list ipra witch not MO (set default folfer FROM_MSE)");
 			logger.error("                       -ms set mseid from source XML (set default folder FROM_MSE");
 			logger.error("                       -vs set Virtual SNILS (auto exececute in mode -v");
+			logger.error("                       -f create emty folder for all MO (if it no exists)");
+			logger.error("                          exec after add new MO");
 			return;
 		}
 		mode = MODE_UNKNOWN;
@@ -82,6 +86,8 @@ public class Program {
 			mode = MODE_SETMSEID;
 		if (args[0].equals("-vs")) 
 			mode = MODE_SETVSNILS;
+		if (args[0].equals("-f")) 
+			mode = MODE_СREMOFOLDER;
 		
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
@@ -135,6 +141,11 @@ public class Program {
 		}
 		else if( mode == MODE_SETVSNILS) {
 			VirtSnils.run(mse);
+			logger.info("Done");
+			return;
+		}
+		else if( mode == MODE_СREMOFOLDER) {
+			CreateFolderAllMo.run(sDirComplete, moDAO);
 			logger.info("Done");
 			return;
 		}
@@ -1231,7 +1242,7 @@ public class Program {
 		Move(fullpath, sDirDistination);
 	}
 
-	private static void CreateFolder(String sDirDistination) {
+	public static void CreateFolder(String sDirDistination) {
 		File dirDest = new File(sDirDistination);
 		if (dirDest.exists() && dirDest.isDirectory()) {
 		} else {
