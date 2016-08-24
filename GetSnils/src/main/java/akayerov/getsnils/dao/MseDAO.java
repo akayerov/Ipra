@@ -14,4 +14,5 @@ public interface MseDAO {
 	public Mse getByNameFile(String namefile);
     public List<Mse> listNotMo();
     public List<Mse> listOrderedMo();
+    public void setVSnils();
 }

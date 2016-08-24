@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import akayerov.getsnils.models.Mse;
 
 
@@ -101,6 +100,15 @@ public class MseDAOImpl implements MseDAO {
 	public List<Mse> listOrderedMo() {
 		// TODO Auto-generated method stub
         return em.createQuery("from Mse m where m.idMo != 0 order by m.idMo,m.lname,m.fname,m.sname", Mse.class).getResultList();
+	}
+
+	@Override
+	@Transactional
+	public void setVSnils() {
+	    em.createQuery("update Mse m set m.snils = concat('VS_', nextval('virt_snils')) where m.snils = ''").executeUpdate();
+//	    em.createNativeQuery("update mse4 set snils = concat('VS_', nextval('virt_snils')) where snils like ' %'").executeUpdate();
+
+		
 	}
  
 }

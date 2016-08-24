@@ -37,6 +37,7 @@ import akayerov.getsnils.models.Prg;
 import akayerov.getsnils.models.Prg_rhb;
 import akayerov.getsnils.models.Snils;
 import akayerov.report.ReportRes;
+import akayerov.report.VirtSnils;
 
 public class Program {
 
@@ -53,18 +54,19 @@ public class Program {
 	public static final int MODE_LISTNOTMO = 4;
 	public static final int MODE_FIMODE = 5;
 	public static final int MODE_SETMSEID = 6;
+	public static final int MODE_SETVSNILS = 7;
 	private static int mode;
 
 	public static void main(String[] args) {
 
 		if (args.length != 2) {
 			logger.error("Usage: java  -jar ipra -<svrlf> <directory with worked file>");
-			logger.error("                       -s work with SNILS");
-			logger.error("                       -v work with XML files from MSE");
-			logger.error("                       -r work with XML files from MO");
-			logger.error("                       -l make list ipra witch not MO");
-			logger.error("                       -f <dir fieles FI-YYMM_OGRN.txt from MO> <dir XML MSE>  work with XML files from MSE - part2");
-			logger.error("                       -ms set mseid from source XML");
+			logger.error("                       -s work with SNILS set default folder SNILS)");
+			logger.error("                       -v work with XML files from MSE (set default folder FROM_MSE)");
+			logger.error("                       -r work with XML files from MO set default folder RESULT)");
+			logger.error("                       -l make list ipra witch not MO (set default folfer FROM_MSE)");
+			logger.error("                       -ms set mseid from source XML (set default folder FROM_MSE");
+			logger.error("                       -vs set Virtual SNILS (auto exececute in mode -v");
 			return;
 		}
 		mode = MODE_UNKNOWN;
@@ -76,11 +78,11 @@ public class Program {
 			mode = MODE_RESULT;
 		if (args[0].equals("-l"))
 			mode = MODE_LISTNOTMO;
-		if (args[0].equals("-f"))
-			mode = MODE_FIMODE;
-		if (args[0].equals("-ms")) {
+		if (args[0].equals("-ms")) 
 			mode = MODE_SETMSEID;
-		}
+		if (args[0].equals("-vs")) 
+			mode = MODE_SETVSNILS;
+		
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
 			return;
@@ -107,13 +109,13 @@ public class Program {
 		FolderIpra folder = (FolderIpra) context.getBean("folder");
 		IpraListNotMo listNotMo = (IpraListNotMo) context.getBean("listNotMo");
 
-		String sDirComlete = args[1] + "\\" + DIR_COMLETE;
-		File dirComlete = new File(sDirComlete);
-		if (dirComlete.exists() && dirComlete.isDirectory()) {
-			logger.info("Обработаные файлы перемещаются в папку:" + sDirComlete);
+		String sDirComplete = args[1] + "\\" + DIR_COMLETE;
+		File dirComplete = new File(sDirComplete);
+		if (dirComplete.exists() && dirComplete.isDirectory()) {
+			logger.info("Обработаные файлы перемещаются в папку:" + sDirComplete);
 		} else {
-			logger.info("Папка не найдена, будет создана сейчас:" + sDirComlete);
-			dirComlete.mkdir();
+			logger.info("Папка не найдена, будет создана сейчас:" + sDirComplete);
+			dirComplete.mkdir();
 		}
 		String sDirError = args[1] + "\\" + DIR_ERROR;
 		File dirError = new File(sDirError);
@@ -128,40 +130,59 @@ public class Program {
 		
 		if( mode == MODE_SETMSEID) {
 			setMSEid(args[1], mse);
+			logger.info("Done");
 			return;
 		}
-		
+		else if( mode == MODE_SETVSNILS) {
+			VirtSnils.run(mse);
+			logger.info("Done");
+			return;
+		}
+ 
+			
 		folder.setPath(args[1]);
 		IpraFile fileNameObj = folder.getNextFile(mode);
         
 		while (fileNameObj != null) {
 
 			if (mode == MODE_SNILS) {
-				getSnilsFunction(fileNameObj, rd, moDAO, sDirComlete, sDirError,
+				getSnilsFunction(fileNameObj, rd, moDAO, sDirComplete, sDirError,
 						snilsDAO, context);
 			} else if (mode == MODE_MSE)
-				mSEFunction(fileNameObj, moDAO, sDirComlete, sDirError, snilsDAO, mse);
+				mSEFunction(fileNameObj, moDAO, sDirComplete, sDirError, snilsDAO, mse);
 // 		    else if (mode == MODE_MSE)
 //			    getIpraFIOFunction(fileNameObj, moDAO, sDirComlete, sDirError, mse);
 			else if (mode == MODE_RESULT)
-				resultIpraFunction(fileNameObj, moDAO, sDirComlete, sDirError,
+				resultIpraFunction(fileNameObj, moDAO, sDirComplete, sDirError,
 						snilsDAO, prgDAO, prg_rhbDAO);
 			fileNameObj = folder.getNextFile(mode);
 		}
 
 		if (mode == MODE_MSE) {
 			logger.info("Создание Zip архивов:");
-			CreateZIPs(sDirComlete,"IR", context);
-		}
-		else if (mode == MODE_RESULT) {
-				ReportRes.run(mse,moDAO,sDirComlete);
-				logger.info("Создание Zip архивов:");
-				CreateZIPs(sDirError,"ERROR", context);	
+			VirtSnils.run(mse);                   //  автоматический запуск запроса на создание вирт снилс
+		//  авто запуск формированиния списка неразобранных ИПРА выписок
+			logger.info("Create List IPRA not MO:");
+            String sFile = sDirComplete + "\\" + "IPRA_NOT_MO.txt";
+			listNotMo.run(mse,sFile);
+			CopyFileInFOlder(sFile, sDirComplete, context);
+			logger.info("Done");
+		//
+
+			CreateZIPs(sDirComplete,"IR", context);
 		}
 		else if (mode == MODE_LISTNOTMO) {
 			logger.info("Create List IPRA not MO:");
-			listNotMo.run(mse,args[1]);
-			logger.info("Complete");
+            String sFile = args[1] + "\\" + "IPRA_NOT_MO.txt";
+			listNotMo.run(mse,sFile);
+			CopyFileInFOlder(sFile, sDirComplete, context);
+			logger.info("Done");
+		}
+		else if (mode == MODE_RESULT) {
+			ReportRes.run(mse,moDAO,sDirComplete);
+			logger.info("Создание Zip архивов:");
+			CreateZIPs(sDirError,"ERROR", context);	
+			logger.info("Done");
 		}
 	}
 
@@ -209,7 +230,7 @@ public class Program {
 
             					Element MSEID = (Element) root.getElementsByTagName("Id").item(0);
             					if (MSEID != null) {
-            						mse.setMseid(MSEID.getTextContent());
+            						mse.setMseid(MSEID.getTextContent().toLowerCase());
             						mseDAO.update(mse.getId(),mse);
             					} else {
             						mse.setMseid("");
@@ -490,7 +511,7 @@ public class Program {
 			Element mseid = (Element) root.getElementsByTagName("MSEID")
 					.item(0);
 			if (mseid != null) {
-				prg.setMseid(mseid.getTextContent());
+				prg.setMseid(mseid.getTextContent().toLowerCase());
 			} else {
 				prg.setMseid("");
 				// num_err++; Сейчас я не буду считать это ошибкой!!!
@@ -1011,7 +1032,7 @@ public class Program {
 		}
 		Element MSEID = (Element) root.getElementsByTagName("Id").item(0);
 		if (MSEID != null) {
-			mse.setMseid(MSEID.getTextContent());
+			mse.setMseid(MSEID.getTextContent().toLowerCase());
 		} else {
 			mse.setMseid("");
 		}
@@ -1051,15 +1072,28 @@ public class Program {
 		return null;
 	}
 
-	private static void CreateZIPs(String sDirComlete, String pref, BeanFactory context) {
+	private static void CreateZIPs(String sDirComplete, String pref, BeanFactory context) {
 //		FolderIpra folder = new FolderIpraImpl();
 		FolderIpra folder =  (FolderIpra) context.getBean("folder");
-		folder.setPath(sDirComlete);
+		folder.setPath(sDirComplete);
 		IpraFile fileNameObj = folder.getNextDir();
 
 		while (fileNameObj != null) {
-			logger.info("Папка c МО найдена:" + fileNameObj.fullpath);
+			logger.info("Folder MO:" + fileNameObj.fullpath);
 			CreateZIP(fileNameObj.fullpath, pref);
+			fileNameObj = folder.getNextDir();
+		}
+
+	}
+	
+// копировать файл по все поддиректории для папки 	
+	private static void CopyFileInFOlder(String sFile, String sDirComplete, BeanFactory context) {
+		FolderIpra folder =  (FolderIpra) context.getBean("folder");
+		folder.setPath(sDirComplete);
+		IpraFile fileNameObj = folder.getNextDir();
+		while (fileNameObj != null) {
+			logger.info("Folder MO:" + fileNameObj.fullpath);
+			Copy(sFile, fileNameObj.fullpath);
 			fileNameObj = folder.getNextDir();
 		}
 
@@ -1173,7 +1207,18 @@ public class Program {
 			System.err.println(e);
 		}
 	}
-
+	
+	private static void Copy(String fullpath, String sDirDistination) {
+		Path copyfile = FileSystems.getDefault().getPath(fullpath);
+		Path target_dir = FileSystems.getDefault().getPath(sDirDistination);
+		try {
+			Files.copy(copyfile, target_dir.resolve(copyfile.getFileName()),
+					StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+	}
+	
 	private static void Move(String fullpath, String sDirDistination,
 			boolean createFolder) {
 		if (createFolder) {

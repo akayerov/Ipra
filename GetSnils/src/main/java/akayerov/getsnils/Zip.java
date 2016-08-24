@@ -35,7 +35,7 @@ public class Zip {
                     } else {    // кроме zip файлов
         				int pos_end   = name.lastIndexOf(".", name.length());
         				String type = name.substring(pos_end+1).toUpperCase();
-        				if(!type.equals("ZIP")) {
+        				if(!type.equals("ZIP") ) {
 
 	                        zout.putNextEntry(new ZipEntry(name));
 	 
