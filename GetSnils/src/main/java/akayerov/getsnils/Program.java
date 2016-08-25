@@ -202,7 +202,7 @@ public class Program {
 		else if (mode == MODE_RESULT) {
 			ReportRes.run(mse,moDAO,sDirComplete);
 			logger.info("Создание Zip архивов:");
-			CreateZIPs(sDirError,"ERROR", context);	
+			CreateZIPs(sDirComplete,"IPRA_RESULT", context);	
 			logger.info("Done");
 		}
 	}
