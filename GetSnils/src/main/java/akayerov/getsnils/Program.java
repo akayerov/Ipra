@@ -153,7 +153,7 @@ public class Program {
 		    if(  mode == MODE_СREMOFOLDER )
 			  return;
 		}
-		else if( mode == MODE_TEST || mode == MODE_RESULT) {
+		else if( mode == MODE_TEST || mode == MODE_RESULT || mode == MODE_SNILS) {
 			Zip.ZipExtract(args[1]);
 			logger.info("Done");
 		    if(  mode == MODE_TEST )
