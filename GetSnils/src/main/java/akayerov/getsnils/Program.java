@@ -318,7 +318,7 @@ public class Program {
 					+ " .Файл перемещен в: " + sDirError);
 			Move(fileNameObj.fullpath, sDirError, true);
 		}
-		logger.debug("ИПРА результат обработан---------------------------");
+//		logger.debug("ИПРА результат обработан---------------------------");
 
 	}
 
@@ -924,7 +924,7 @@ public class Program {
 			logger.error("Неправильное имя файла:" + fileNameObj.fullpath);
 			Move(fileNameObj.fullpath, sDirError, true);
 		}
-		logger.info("ИПРА выписка обработана---------------------------");
+//		logger.info("ИПРА выписка обработана---------------------------");
 
 	}
 

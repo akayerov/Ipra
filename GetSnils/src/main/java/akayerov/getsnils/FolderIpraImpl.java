@@ -98,11 +98,13 @@ public class FolderIpraImpl implements FolderIpra {
 	public IpraFile getNextDir() {
 	      while(idx < fList.length) {
 	      	String sogrn = null;
-	  		if(!fList[idx].isFile()) 
+	  		if(!fList[idx].isFile()) { 
 	  			    sogrn = fList[idx].getName();
 	  		        String namefile = sogrn;
 	  		    	return new IpraFile(fList[idx++].getAbsolutePath(),sogrn,namefile);
-	  		}		  
+	  		}	
+	    	idx++;
+	      } 
 		return null;
 	}
 
