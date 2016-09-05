@@ -1198,8 +1198,17 @@ public class Program {
 						sn.setOgrn(fileNameObj.ogrn);
 						snils.save(sn);
 						newSnils++;
-					} else
+					} else { 
+						Snils su = (Snils) context.getBean(Snils.class);
+                        if(!fileNameObj.ogrn.equals(sn.getOgrn())) {
+            			   logger.info("Found update snils in other MIO");
+						   su.setSnils(s);
+						   su.setOgrn(fileNameObj.ogrn);
+						   snils.update(sn.getSnils(),su);
+                        }   
+                        
 						oldSnils++;
+					}	
 					// logger.info("СНИЛС уже есть базе:" + s);
 
 					s = rd.getNextSnils();
