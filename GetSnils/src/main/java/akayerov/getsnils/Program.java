@@ -56,7 +56,8 @@ public class Program {
 	public static final int MODE_СREMOFOLDER = 5;
 	public static final int MODE_SETMSEID = 6;
 	public static final int MODE_SETVSNILS = 7;
-	public static final int MODE_TEST = 8;
+	public static final int MODE_EXTRACTZIP = 8;
+	private static final int MODE_TESTDIR = 9;
 	private static int mode;
 
 	public static void main(String[] args) {
@@ -72,6 +73,8 @@ public class Program {
 			logger.error("                       -vs set Virtual SNILS (auto exececute in mode -v");
 			logger.error("                       -f create emty folder for all MO (if it no exists)");
 			logger.error("                          exec after add new MO");
+			logger.error("                       -e extract from zip)");
+			logger.error("                       -t test / compare MSE file ");
 			return;
 		}
 		mode = MODE_UNKNOWN;
@@ -89,8 +92,10 @@ public class Program {
 			mode = MODE_SETVSNILS;
 		if (args[0].equals("-f")) 
 			mode = MODE_СREMOFOLDER;
+		if (args[0].equals("-e")) 
+			mode = MODE_EXTRACTZIP;
 		if (args[0].equals("-t")) 
-			mode = MODE_TEST;
+			mode = MODE_TESTDIR;
 		
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
@@ -142,6 +147,11 @@ public class Program {
 			logger.info("Done");
 			return;
 		}
+		else if( mode == MODE_TESTDIR) {
+			TestBaseIpra.start(args[1], mse, moDAO);
+			logger.info("Done");
+			return;
+		}
 		else if( mode == MODE_SETVSNILS) {
 			VirtSnils.run(mse);
 			logger.info("Done");
@@ -153,10 +163,10 @@ public class Program {
 		    if(  mode == MODE_СREMOFOLDER )
 			  return;
 		}
-		else if( mode == MODE_TEST || mode == MODE_RESULT || mode == MODE_SNILS) {
+		else if( mode == MODE_EXTRACTZIP || mode == MODE_RESULT || mode == MODE_SNILS) {
 			Zip.ZipExtract(args[1]);
 			logger.info("Done");
-		    if(  mode == MODE_TEST )
+		    if(  mode == MODE_EXTRACTZIP )
 			   return;
 		}
  
@@ -1200,7 +1210,7 @@ public class Program {
 						newSnils++;
 					} else { 
 						Snils su = (Snils) context.getBean(Snils.class);
-                        if(!fileNameObj.ogrn.equals(sn.getOgrn())) {
+                        if(!fileNameObj.ogrn.trim().equalsIgnoreCase(sn.getOgrn().trim())) {
             			   logger.info("Found update snils in other MIO");
 						   su.setSnils(s);
 						   su.setOgrn(fileNameObj.ogrn);
@@ -1227,7 +1237,7 @@ public class Program {
 
 	}
 
-	private static void Move(String fullpath, String sDirDistination) {
+	public static void Move(String fullpath, String sDirDistination) {
 		Path movefrom = FileSystems.getDefault().getPath(fullpath);
 		Path target_dir = FileSystems.getDefault().getPath(sDirDistination);
 		try {
