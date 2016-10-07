@@ -190,7 +190,6 @@ public class Program {
 		}
 
 		if (mode == MODE_MSE) {
-			logger.info("Создание Zip архивов:");
 			VirtSnils.run(mse);                   //  автоматический запуск запроса на создание вирт снилс
 		//  авто запуск формированиния списка неразобранных ИПРА выписок
 			logger.info("Create List IPRA not MO:");
@@ -199,7 +198,7 @@ public class Program {
 			CopyFileInFOlder(sFile, sDirComplete, context);
 			logger.info("Done");
 		//
-
+			logger.info("Создание Zip архивов:");
 			CreateZIPs(sDirComplete,"IR", context);
 		}
 		else if (mode == MODE_LISTNOTMO) {
@@ -870,7 +869,7 @@ public class Program {
 			String s;
 			// Есть ли СНИЛС в выписке?
 			try {
-				sSnils = getSnils(fileNameObj.fullpath);
+				sSnils = getSnils(fileNameObj.fullpath, fileNameObj.namefile, mse);
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
@@ -912,12 +911,14 @@ public class Program {
 					}
 
 				}
-				else  { // 02/08/2016 СНИЛС в таблице не найден - все равно запись в 	базе создаем!! - так удобнее считать файлы выписок
+				else  { // 02/08/2016 СНИЛС в таблице не найден - все равно запись в базе создаем!! - так удобнее считать файлы выписок
 					if (!isMSE(mse, fileNameObj.namefile))
 						AddRecordMSE(fileNameObj, sn, m, mse);
-					else
+					else {
+                        
 						logger.info("ИПРА выписка из файла была ранее разнесена:"
 								+ fileNameObj.fullpath);
+					}	
 					logger.info("Не найден СНИЛС в таблице SNILS:" + sSnils);
 					
 				}
@@ -1154,7 +1155,7 @@ public class Program {
 
 	}
 
-	private static String getSnils(String fullpath)
+	private static String getSnils(String fullpath, String namefile, MseDAO mse)
 			throws ParserConfigurationException, SAXException, IOException {
 		File f = new File(fullpath);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -1165,11 +1166,29 @@ public class Program {
 		Element SNILS = (Element) root.getElementsByTagName("SNILS").item(0);
 		if (SNILS != null) {
 			String textSNILS = SNILS.getTextContent(); // тоже для упрощения
-			return textSNILS;
+			if( !textSNILS.isEmpty())
+			   return textSNILS;
+			else
+			   return findVirtSnils(namefile,mse);	
 		} else {
-			return "";
-		}
+	      return findVirtSnils(namefile,mse);	
+	    }
 	}
+
+
+	/* 07.10.2016 прежде чем выдавать пустое значение - по имени файла поищем в списке mse4 вирт снилс - может он уже занесен
+	 * тогда возвратим его и файл распределится как нормальные */
+	
+	private static String findVirtSnils(String namefile, MseDAO mse) {
+		Mse m = mse.getByNameFile(namefile);
+		if( m != null) {
+			return m.getSnils().trim();
+		}
+		else
+		  return "";
+	}
+
+
 
 	/*
 	 * GetSnilsFunction - функция обрабатывает очередной СНИЛС файл
