@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;MyFirstMVCSpring/src/main/webapp/WEB-INF/views/check_user&apos; to &apos;check_user.jsp&apos;" description="Rename resource &apos;check_user&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/webapp/WEB-INF/views/check_user" name="check_user.jsp" stamp="1476969857292" updateReferences="true"/>
+</session>

@@ -1,0 +1,5 @@
+127.0.0.1 - - [27/Oct/2016:10:30:00 +0300] "GET / HTTP/1.1" 404 994
+0:0:0:0:0:0:0:1 - - [27/Oct/2016:10:30:01 +0300] "GET /firstmvcprj/ HTTP/1.1" 200 949
+0:0:0:0:0:0:0:1 - - [27/Oct/2016:10:30:01 +0300] "GET /firstmvcprj/resources/css/home.css;jsessionid=43AF3CACBD403FDE1087C495236864EF HTTP/1.1" 200 9229
+0:0:0:0:0:0:0:1 - - [27/Oct/2016:10:30:02 +0300] "GET /favicon.ico HTTP/1.1" 404 1016
+0:0:0:0:0:0:0:1 - - [27/Oct/2016:10:30:07 +0300] "POST /firstmvcprj/check_user HTTP/1.1" 200 145

@@ -12,4 +12,26 @@
 		<list key="issueManagementUrl">
 		</list>
 	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="C:\Users\a_kayerov\workspace_ipra\SpringSecurity_11"/>
+			<item value="C:\Users\a_kayerov\workspace_security_example\gs-handling-form-submission-master"/>
+			<item value="C:\Users\a_kayerov\workspace_auth2"/>
+			<item value="C:\Users\a_kayerov\workspace_security_example"/>
+			<item value="C:\Users\a_kayerov\workspace_spring_boot_master\spring-boot-samples\spring-boot-sample-web-secure"/>
+			<item value="C:\Users\a_kayerov\workspace_spring_boot_master\spring-boot-starters\spring-boot-starter-security"/>
+			<item value="C:\Users\a_kayerov\workspace_ipra\IpraServ"/>
+			<item value="C:\Users\a_kayerov\workspace_ipra\IpraService"/>
+			<item value="C:\Users\a_kayerov\workspace_spring_boot_master\spring-boot-samples\spring-boot-sample-data-jpa"/>
+			<item value="C:\Users\a_kayerov\workspace_spring_boot_master"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
 </section>

@@ -1,0 +1,3 @@
+#GlassFish 3
+#Wed Nov 02 15:51:49 MSK 2016
+org.eclipse.jst.jee.server\:SpringSecurity_11=C\:\\www\\Servers\\glassfish4\\glassfish\\domains\\domain1\\eclipseApps\\SpringSecurity_11

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aop-reference-model>
-<aop-project name="GetSnils"/>
-<aop-project name="XMLUnmarshal"/>
+<aop-project name="IpraService"/>
+<aop-project name="SpringSecurity_11"/>
+<aop-project name="gs-handling-form-submission"/>
+<aop-project name="FirstSecurityMVC"/>
+<aop-project name="MyFirstMVCSpring"/>
+<aop-project name="spring-boot-sample-web-secure"/>
 </aop-reference-model>

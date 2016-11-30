@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;SampleWebSecureApplication.java&apos; to &apos;IpraService/src/main/java/com.akayerov.ipraservice.jpa.security&apos;&#x0D;&#x0A;- Original project: &apos;spring-boot-sample-web-secure&apos;&#x0D;&#x0A;- Destination element: &apos;IpraService/src/main/java/com.akayerov.ipraservice.jpa.security&apos;&#x0D;&#x0A;- Original element: &apos;sample.web.secure.SampleWebSecureApplication.java&apos;" description="Copy compilation unit" destination="=IpraService/src\/main\/java&lt;com.akayerov.ipraservice.jpa.security" element1="/src\/main\/java&lt;sample.web.secure{SampleWebSecureApplication.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1476871616576" units="1" version="1.0"/>
+</session>

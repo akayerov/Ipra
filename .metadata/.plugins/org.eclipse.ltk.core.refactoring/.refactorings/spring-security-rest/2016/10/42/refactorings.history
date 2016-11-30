@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;Idea.java&apos; to &apos;be.g00glen00b.model.Idea.java&apos;&#x0D;&#x0A;- Original project: &apos;spring-security-rest&apos;&#x0D;&#x0A;- Destination element: &apos;be.g00glen00b.model.Idea.java&apos;&#x0D;&#x0A;- Original element: &apos;be.g00glen00b.model.Idea.java&apos;" description="Copy compilation unit" destination="/src\/main\/java&lt;be.g00glen00b.model{Idea.java" element1="/src\/main\/java&lt;be.g00glen00b.model{Idea.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1476264273592" units="1" version="1.0"/>
+</session>

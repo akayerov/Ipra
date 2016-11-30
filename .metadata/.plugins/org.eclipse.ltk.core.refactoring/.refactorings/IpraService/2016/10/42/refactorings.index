@@ -1,0 +1,6 @@
+1476187577779	Move compilation unit
+1476265437037	Rename package 'com.akayerov.ipraservice.security'
+1476265523969	Delete element
+1476267843925	Rename method 'findByFirstNameLike'
+1476339700549	Encapsulate field 'name'
+1476339713801	Encapsulate field 'password'

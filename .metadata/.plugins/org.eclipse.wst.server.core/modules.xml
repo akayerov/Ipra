@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<modules>
+  <module moduleId="org.eclipse.jst.jee.server:MyFirstMVCSpring" serverId="Tomcat v8.0 Server at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:FirstSecurityMVC" serverId="GlassFish 4 at localhost [domain1]"/>
+  <module moduleId="org.eclipse.jst.jee.server:SpringSecurity_11" serverId="GlassFish 4 at localhost [domain1]"/>
+</modules>

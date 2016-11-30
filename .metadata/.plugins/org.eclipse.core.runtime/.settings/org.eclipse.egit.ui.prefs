@@ -1,0 +1,5 @@
+commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<messages>\r\n<message>Security add</message>\r\n<message>Security Start work\!</message>\r\n<message>\u041E\u0431\u0440\u0430\u0431\u043E\u0442\u043A\u0430 VSNILS \u0432 \u043E\u0447\u0435\u0440\u0435\u0434\u0438 FROM_MSE</message>\r\n<message>first commit NO Security</message>\r\n<message>Testing folder FROM_MSE</message>\r\n<message>Update existing Snils with other MO</message>\r\n<message>Snils from zip</message>\r\n<message>fixed bug nextdir fuunction + log4d in file</message>\r\n<message>- error + small change</message>\r\n<message>unzip </message>\r\n</messages>
+eclipse.preferences.version=1
+org.eclipse.egit.ui.githistorypage.showallfilter=SHOWALLRESOURCE
+resourcehistory_graph_split=574,425
+resourcehistory_rev_split=700,300

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;spring-boot-sample-data-jpa&apos; to &apos;ipra_service&apos;" description="Rename resource &apos;spring-boot-sample-data-jpa&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/spring-boot-sample-data-jpa" name="ipra_service" stamp="1473330187070" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;ipra_service&apos; to &apos;IpraService&apos;" description="Rename resource &apos;ipra_service&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/ipra_service" name="IpraService" stamp="1473330304858" updateReferences="true"/>
+</session>
