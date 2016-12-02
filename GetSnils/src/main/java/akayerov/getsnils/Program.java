@@ -48,6 +48,12 @@ public class Program {
 	private static final String DIR_SUCCESS = "Успешно";
 	private static final String DIR_FAIL = "Неудача";
 
+	private static final int MSE_UPDATE_ID = 0;  // обновление поля id  в таблице MSE4
+	private static final int MSE_SENDER_MO = 1;  // обновление поля sender_mo  в таблице MSE4
+
+	private static final int LEN_FIELD_SENDERMO = 80;  // по размеру соответствующих полей
+	private static final int LEN_FIELD_SENDERMOD = 40;
+	
 	private static final int MODE_UNKNOWN = 0;
 	public static final int MODE_SNILS = 1;
 	public static final int MODE_MSE = 2;
@@ -58,7 +64,10 @@ public class Program {
 	public static final int MODE_SETVSNILS = 7;
 	public static final int MODE_EXTRACTZIP = 8;
 	private static final int MODE_TESTDIR = 9;
+	private static final int MODE_IPRAFORCE = 10;
 	private static int mode;
+	private static boolean smartFolder = false;     // c версии 1.3 = true - контролирует изменения целевых папок для "умной" рассылки
+	                                                // изменений по МО - + стат класс SmartFolder
 
 	public static void main(String[] args) {
 
@@ -66,7 +75,9 @@ public class Program {
 			logger.error("Usage: java  -jar ipra -<svrlf> <directory with worked file>");
 			logger.error("                       -s work with SNILS set default folder SNILS)");
 			logger.error("                       -v work with XML files from MSE (set default folder FROM_MSE)");
+			logger.error("                       -vs smart work with XML files from MSE (set default folder FROM_MSE)");
 			logger.error("                       -r work with XML files from MO set default folder RESULT)");
+			logger.error("                       -rs smart work with XML files from MO set default folder RESULT)");
 			logger.error(" ");
 			logger.error("                       -l make list ipra witch not MO (set default folfer FROM_MSE)");
 			logger.error("                       -ms set mseid from source XML (set default folder FROM_MSE");
@@ -75,15 +86,27 @@ public class Program {
 			logger.error("                          exec after add new MO");
 			logger.error("                       -e extract from zip)");
 			logger.error("                       -t test / compare MSE file ");
+			logger.error("                       -force find MO by field <SenderMedOrgName> in XML MSE");
 			return;
 		}
+		logger.info(args[0]);
 		mode = MODE_UNKNOWN;
 		if (args[0].equals("-s"))
 			mode = MODE_SNILS;
 		if (args[0].equals("-v"))
 			mode = MODE_MSE;
+		if (args[0].equals("-vs")) {
+			mode = MODE_MSE;
+			smartFolder = true;
+			SmartFolder.init();
+		}
 		if (args[0].equals("-r"))
 			mode = MODE_RESULT;
+		if (args[0].equals("-rs")) {
+			mode = MODE_RESULT;
+			smartFolder = true;
+			SmartFolder.init();
+		}
 		if (args[0].equals("-l"))
 			mode = MODE_LISTNOTMO;
 		if (args[0].equals("-ms")) 
@@ -96,6 +119,8 @@ public class Program {
 			mode = MODE_EXTRACTZIP;
 		if (args[0].equals("-t")) 
 			mode = MODE_TESTDIR;
+		if (args[0].equals("-force")) 
+			mode = MODE_IPRAFORCE;
 		
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
@@ -143,7 +168,12 @@ public class Program {
 
 		
 		if( mode == MODE_SETMSEID) {
-			setMSEid(args[1], mse);
+			setMSEdata(MSE_UPDATE_ID, args[1], mse);
+			logger.info("Done");
+			return;
+		}
+		else if( mode == MODE_IPRAFORCE) {
+			setMSEdata(MSE_SENDER_MO, args[1], mse);
 			logger.info("Done");
 			return;
 		}
@@ -157,7 +187,7 @@ public class Program {
 			logger.info("Done");
 			return;
 		}
-		else if( mode == MODE_СREMOFOLDER || mode == MODE_MSE) {
+		else if( mode == MODE_СREMOFOLDER || mode == MODE_MSE || mode == MODE_IPRAFORCE) {
 			CreateFolderAllMo.run(sDirComplete, moDAO);
 			logger.info("Done");
 		    if(  mode == MODE_СREMOFOLDER )
@@ -181,8 +211,6 @@ public class Program {
 						snilsDAO, context);
 			} else if (mode == MODE_MSE)
 				mSEFunction(fileNameObj, moDAO, sDirComplete, sDirError, snilsDAO, mse);
-// 		    else if (mode == MODE_MSE)
-//			    getIpraFIOFunction(fileNameObj, moDAO, sDirComlete, sDirError, mse);
 			else if (mode == MODE_RESULT)
 				resultIpraFunction(fileNameObj, moDAO, sDirComplete, sDirError,
 						snilsDAO, prgDAO, prg_rhbDAO);
@@ -216,9 +244,7 @@ public class Program {
 		}
 	}
 
-
-
-	private static void setMSEid(String path, MseDAO mseDAO) {
+	private static void setMSEdata(int mode, String path, MseDAO mseDAO) {
     // для однократного выполнения - расставляем для уже обработанных файлов *. xml код MSEID в таблицу mse4    
         // определяем объект для каталога
         Mse mse;
@@ -229,14 +255,15 @@ public class Program {
             // получаем все вложенные объекты в каталоге
             for(File item : dir.listFiles()){
                  if(item.isDirectory()){
-                     System.out.println(item.getName() + "  \tкаталог");
+                     System.out.println("каталог:" + item.getName() + "\n");
                      for(File item1 : item.listFiles()){
-                         System.out.println(item1.getName() + "\tфайл");
               			 String s = item1.getName(); 
             			 int pos_end   = s.lastIndexOf(".", s.length());
             			 String type = s.substring(pos_end+1).toUpperCase();
             			 if(type.equals("XML")) {
             					File f = new File(item1.getAbsolutePath());
+                                System.out.println("файл1:"+ item1.getAbsolutePath() + "\n");
+
             					mse = mseDAO.getByNameFile(item1.getName());
             					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             					DocumentBuilder builder = null;
@@ -257,14 +284,37 @@ public class Program {
             						e.printStackTrace();
             					}
             					Element root = document.getDocumentElement();
-
-            					Element MSEID = (Element) root.getElementsByTagName("Id").item(0);
-            					if (MSEID != null) {
-            						mse.setMseid(MSEID.getTextContent().toLowerCase());
-            						mseDAO.update(mse.getId(),mse);
-            					} else {
-            						mse.setMseid("");
-            					}
+                                if( mode == MSE_UPDATE_ID) {
+	            					Element MSEID = (Element) root.getElementsByTagName("Id").item(0);
+	            					if (MSEID != null) {
+	            						mse.setMseid(MSEID.getTextContent().toLowerCase());
+	            						mseDAO.update(mse.getId(),mse);
+	            					} else {
+	            						mse.setMseid("");
+	            					}
+                                }	
+                                else if( mode == MSE_SENDER_MO) {
+	            					Element MSSENDERMO = (Element) root.getElementsByTagName("SenderMedOrgName").item(0);
+	            					if (MSSENDERMO != null) {
+	            						String ss =  MSSENDERMO.getTextContent();
+	            						if( ss.length() > LEN_FIELD_SENDERMO){
+    	            						ss = ss.substring(0,LEN_FIELD_SENDERMO-1);
+                                        }
+	            						String ssd = synteticNameMo(ss);
+	            						if( ssd.length() > LEN_FIELD_SENDERMOD){
+    	            						ssd = ssd.substring(0,LEN_FIELD_SENDERMOD - 1);
+                                        }
+	            								
+//	            						System.out.println("SenderMO = " + ss + " mse:" + mse);
+                                        if(mse != null) { 
+	                                      mse.setSender_mo(ss);
+	            						  mseDAO.update(mse.getId(),mse);
+                                        }  
+	            					} else {
+	                                    System.out.println("SenderMO = NOT FOUND");
+	            					}
+                                }	
+                                
             			 }
                      }
                      
@@ -863,6 +913,8 @@ public class Program {
 		int newSnils = 0;
 		int oldSnils = 0;
 		String sSnils = null;
+		MoParser mp = new MoParser();
+		
 		if (!fileNameObj.ogrn.equals("999999999")) { // не ошибка
 
 			logger.info("ИПРА выписка из файла:" + fileNameObj.fullpath);
@@ -1068,12 +1120,23 @@ public class Program {
 		} else {
 			mse.setMseid("");
 		}
+		Element MSSENDERMO = (Element) root.getElementsByTagName("SenderMedOrgName").item(0);
+		if (MSSENDERMO != null) {
+			mse.setSender_mo(MSSENDERMO.getTextContent());
+		} else {
+			mse.setSender_mo("");
+		}
 
 		
 		if(mo != null)
 		   mse.setIdMo(mo.getId());
 		else
  	       mse.setIdMo(0);
+// 01/12/2016  Установка флага auto в соотвествии с состоянием в таблице snils
+// auto = true когда принадлежность программы МО установлена автоматически по разбору тектового поля Sender_MO		
+		if(sn != null)
+		   mse.setAuto(sn.isAuto());
+		
 		mse.setDt(new Date());
 		mse.setNameFile(fileNameObj.namefile);
 
@@ -1104,6 +1167,34 @@ public class Program {
 		return null;
 	}
 
+	public static String synteticNameMo(String source) {
+		if (source != null) {
+			source = source.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
+			source = source.replace("БЮДЖЕТНОЕ", "");
+			source = source.replace("УЧРЕЖДЕНИЕ", "");
+			source = source.replace("ЯРОСЛАВСКОЙ", "");
+			source = source.replace("ОБЛАСТИ", "");
+			source = source.replace("ЗДРАВООХРАНЕНИЯ", "");
+			source = source.replace('\\', ' ');
+			source = source.replace('/', ' ');
+			source = source.replace('.', ' ');
+			source = source.replace('"', ' ');
+			source = source.replace(',', ' ');
+			source = source.replace(':', ' ');
+			source = source.replace("ГБУЗ", "");
+			source = source.replace("БУЗ", "");
+			source = source.replace("ЯО", "");
+			source = source.replace("ГАУЗ", "");
+			source = source.replace("ГУЗ", "");
+			source = source.replace("№ ", "№");
+			source = source.trim();
+
+			return source;
+		}
+		return null;
+	}
+	
+	
 	private static void CreateZIPs(String sDirComplete, String pref, BeanFactory context) {
 //		FolderIpra folder = new FolderIpraImpl();
 		FolderIpra folder =  (FolderIpra) context.getBean("folder");
@@ -1131,28 +1222,29 @@ public class Program {
 
 	}
 
-	private static void CreateZIP(String sDirComlete, String pref) {
-		File directory = new File(sDirComlete);
-		java.util.Calendar calendar = java.util.Calendar.getInstance(
-				java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
-		int year = calendar.get(java.util.Calendar.YEAR);
-		int month = calendar.get(java.util.Calendar.MONTH) + 1;
-		String smonth;
-		if (month < 10)
-			smonth = "0" + month;
-		else
-			smonth = "" + month;
-
-		File zipFile = new File(sDirComlete + "\\" + pref + "_" + (year - 2000) + smonth
-				+ ".zip");
-
-		try {
-			Zip.directoryToZip(directory, zipFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	private static void CreateZIP(String sDirComplete, String pref) {
+        if( !smartFolder || SmartFolder.isFolder(sDirComplete)) {
+			File directory = new File(sDirComplete);
+			java.util.Calendar calendar = java.util.Calendar.getInstance(
+					java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
+			int year = calendar.get(java.util.Calendar.YEAR);
+			int month = calendar.get(java.util.Calendar.MONTH) + 1;
+			String smonth;
+			if (month < 10)
+				smonth = "0" + month;
+			else
+				smonth = "" + month;
+	
+			File zipFile = new File(sDirComplete + "\\" + pref + "_" + (year - 2000) + smonth
+					+ ".zip");
+	
+			try {
+				Zip.directoryToZip(directory, zipFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        } 
 	}
 
 	private static String getSnils(String fullpath, String namefile, MseDAO mse)
@@ -1257,6 +1349,8 @@ public class Program {
 	}
 
 	public static void Move(String fullpath, String sDirDistination) {
+        if( smartFolder )
+        	SmartFolder.add(sDirDistination);
 		Path movefrom = FileSystems.getDefault().getPath(fullpath);
 		Path target_dir = FileSystems.getDefault().getPath(sDirDistination);
 		try {

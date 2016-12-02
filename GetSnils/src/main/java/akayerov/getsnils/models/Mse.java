@@ -44,13 +44,20 @@ public class Mse implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date dt;
 
+
 	@Column(name="nmfile", columnDefinition="bpchar")
 	private String nmfile;
 
+	@Column(name="sender_mo", columnDefinition="bpchar")
+	private String sender_mo;
+
+	
 	@Temporal(TemporalType.DATE)
 	private Date prgdate;
 
 	private boolean complete;
+	private boolean auto;
+
 	@Column(name="mseid", columnDefinition="bpchar")
 	private String mseid;
 
@@ -150,6 +157,15 @@ public class Mse implements Serializable {
 		this.nmfile = nmfile;
 	}
 
+	public String getSender_mo() {
+		return sender_mo;
+	}
+
+	public void setSender_mo(String sender_mo) {
+		this.sender_mo = sender_mo;
+	}
+
+
 	public Date getPrgdate() {
 		return prgdate;
 	}
@@ -166,6 +182,14 @@ public class Mse implements Serializable {
 		this.complete = complete;
 	}
 	
+
+	public boolean isAuto() {
+		return auto;
+	}
+
+	public void setAuto(boolean auto) {
+		this.auto = auto;
+	}
 
 	public String getMseid() {
 		return mseid;

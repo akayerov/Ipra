@@ -44,9 +44,10 @@ public class IpraListNotMo {
 			e.printStackTrace();
 		}
 		try {
+			bufferedWriter.write( "Код СНИЛС : Фамилия : Имя  : Отчество :  Дата рождения :  Дата программы ИПРА  :  Мед организация в документе ИПРА");
 			for (Mse m : lmse) {
 				bufferedWriter.write( m.getSnils() + ";" +  m.getLname() + ";" + m.getFname() + ";"
-						+ m.getSname() + ";" + m.getBdate() + ";" + m.getPrgdate());
+						+ m.getSname() + ";" + m.getBdate() + ";" + m.getPrgdate() + ";" + m.getSender_mo());
 						
 				bufferedWriter.newLine();
 

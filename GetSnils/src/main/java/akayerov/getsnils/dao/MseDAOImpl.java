@@ -60,7 +60,8 @@ public class MseDAOImpl implements MseDAO {
         p.setComplete(s.isComplete());
         p.setPrgdate(s.getPrgdate());
         p.setMseid(s.getMseid());
-
+        p.setSender_mo(s.getSender_mo());
+        p.setAuto(s.isAuto());
         em.flush();
 	}
 
