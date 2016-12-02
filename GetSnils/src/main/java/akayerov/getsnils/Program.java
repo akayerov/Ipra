@@ -300,10 +300,6 @@ public class Program {
 	            						if( ss.length() > LEN_FIELD_SENDERMO){
     	            						ss = ss.substring(0,LEN_FIELD_SENDERMO-1);
                                         }
-	            						String ssd = synteticNameMo(ss);
-	            						if( ssd.length() > LEN_FIELD_SENDERMOD){
-    	            						ssd = ssd.substring(0,LEN_FIELD_SENDERMOD - 1);
-                                        }
 	            								
 //	            						System.out.println("SenderMO = " + ss + " mse:" + mse);
                                         if(mse != null) { 
@@ -909,11 +905,10 @@ public class Program {
 	 * MSEFunction - функция обрабатывает очередной XML-файл из МСЭ
 	 */
 	private static void mSEFunction(IpraFile fileNameObj, MoDAO mo,
-			String sDirComlete, String sDirError, SnilsDAO snils, MseDAO mse) {
+			String sDirComlete, String sDirError, SnilsDAO snils, MseDAO mse)  {
 		int newSnils = 0;
 		int oldSnils = 0;
 		String sSnils = null;
-		MoParser mp = new MoParser();
 		
 		if (!fileNameObj.ogrn.equals("999999999")) { // не ошибка
 
@@ -921,7 +916,16 @@ public class Program {
 			String s;
 			// Есть ли СНИЛС в выписке?
 			try {
+                // Эту надо отключить позднее после проверки  pleload делает аналогично
 				sSnils = getSnils(fileNameObj.fullpath, fileNameObj.namefile, mse);
+				// 02/12/2026 Для получения id организации по строке Sender... в исходном XML документе
+				preloadXML(fileNameObj.fullpath, fileNameObj.namefile, mse); 
+				// тестирование совпадений для проверки preloadXML
+				if( !sSnils.equals(PreviewXML.snils)) {
+					 System.out.println("Error sSnils=" + sSnils + "  PreviewXML.snils=" + PreviewXML.snils);
+				     Error ref = new Error(); // создаем экземпляр
+				     throw ref; 
+				}
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
@@ -939,8 +943,9 @@ public class Program {
 				// для соотвествующей организации
 				// и последующей отправки в МО
 				sn = snils.getById(sSnils);
-				if (sn != null) {
-					logger.info("Найден СНИЛС в базе данных:" + sSnils);
+				if (sn != null || PreviewXML.id_mo > 0) {
+					logger.info("Найден СНИЛС в базе данных:" + sSnils + " или автоматический поиск организации :" 
+				                 + Integer.toString(PreviewXML.id_mo));
 					m = mo.getByOgrn(sn.getOgrn());
 					if (m == null) {
 						logger.error("ОГРН отсуствует в списке МО:"
@@ -990,6 +995,40 @@ public class Program {
 //		logger.info("ИПРА выписка обработана---------------------------");
 
 	}
+
+	private static void preloadXML(String fullpath, String namefile, MseDAO mse) throws ParserConfigurationException, SAXException, IOException {
+		File f = new File(fullpath);
+		MoParser mp = new MoParser();
+		PreviewXML.id_mo = 0;					
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document document = builder.parse(f);
+		Element root = document.getDocumentElement();
+
+		Element SNILS = (Element) root.getElementsByTagName("SNILS").item(0);
+		if (SNILS != null) {
+			String textSNILS = SNILS.getTextContent(); // тоже для упрощения
+			if( !textSNILS.isEmpty())
+			   PreviewXML.snils = textSNILS;
+			else
+		  	   PreviewXML.snils = findVirtSnils(namefile,mse);	
+		}
+		else {
+		  PreviewXML.snils = findVirtSnils(namefile,mse);	
+	    }
+		Element MSSENDERMO = (Element) root.getElementsByTagName("SenderMedOrgName").item(0);
+		if (MSSENDERMO != null) {
+			String ss =  MSSENDERMO.getTextContent();
+			if( ss.length() > LEN_FIELD_SENDERMO){
+				ss = ss.substring(0,LEN_FIELD_SENDERMO-1);
+            }
+			PreviewXML.id_mo = mp.doParse(ss);					
+		} 
+		System.out.println("preloadXML: snils="  + PreviewXML.snils + " id_mo=" + Integer.toString(PreviewXML.id_mo) );
+		
+	}
+
 
 // update MSE - установка МО
 	private static void UpdateRecordMSE(IpraFile fileNameObj, Snils sn, Mo m,

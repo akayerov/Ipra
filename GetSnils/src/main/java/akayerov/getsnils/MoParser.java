@@ -13,49 +13,49 @@ import java.util.regex.Pattern;
 
 
 public class MoParser {
-	static int KB2      = 2;//"Клиническая больница №2" г. Ярославля                +          
-	static int KB9      = 3;//"Клиническая больница №9"                             +          
-	static int GBSEM   = 5;//"Городская больница имени Н.А. Семашко" г. Ярославля            
-	static int POL2     = 6;//поликлиника №2 г. Ярославля                           +          
-	static int BOR_CRB  = 7;//Борисоглебская ЦРБ                                    +          
-	static int DAN_CRB  = 9;//Даниловская ЦРБ                                       +          
-	static int LUB_CRB = 10;//"Любимская ЦРБ"                                                 
-	static int NEK_CRB = 11;//"Некрасовская ЦРБ"                                    +                                         
-	static int PER_CRB = 12;//"Переславская ЦРБ"                                              
-	static int ROS_CRB = 13;//"Ростовская ЦРБ"                                                
-	static int TUT_CRB = 14;//"Тутаевская ЦРБ"                                                
-	static int GB1     = 15;//"Городская больница №1"                                         
-	static int GB2     = 16;//"Городская больница №2 имени Н.И. Пирогова"                     
-	static int GB6     = 17;//"Городская больница №6"                                         
-	static int RPB     = 18;//"Рыбинская психиатрическая больница"                            
-	static int KB1     = 20;//"Клиническая больница №1" г. Ярославля                +             
-	static int KB10    = 21;//"Клиническая больница №10" г. Ярославля               +          
-	static int KB3     = 22;//"Клиническая больница №3" г. Ярославля                +          
-	static int KB5     = 23;//"Клиническая больница №5" г. Ярославля                +          
-	static int ODKB    = 24;//"Областная детская клиническая больница"                        
-	static int OKOB    = 26;//"Областная клиническая онкологическая больница"                 
-	static int OKTB    = 27;//"Областная клиническая туберкулезная больница"                  
-	static int OKPB    = 35;//"Ярославская областная клиническая психиатрическая больница"    
-	static int BOL_CRB = 40;//Большесельская ЦРБ                                              
-	static int BRE_CRB = 41;//"Брейтовская ЦРБ"                                               
-	static int GAV_CRB = 42;//Гаврилов-Ямская ЦРБ                                             
-	static int MIS_CRB = 43;//"ЦРБ им. Д.Л. Соколова" Мышкинского МР                          
-	static int NKZ_CRB = 44;//Некоузская ЦРБ                                                  
-	static int BUR_RB  = 45;//"Бурмакинская районная больница №1" Некрасовского МР            
-	static int PRE_CRB = 46;//Пречистенская ЦРБ Первомайского МР                              
-	static int POS_CRB = 47;//Пошехонская ЦРБ                                                 
-	static int RIB_CRP = 48;//"Рыбинская ЦРП"                                                 
-	static int UGL_CRB = 49;//"Угличская ЦРБ"                                                 
-	static int YAR_CRB = 50;//Ярославская ЦРБ                                                 
-	static int GB3     = 51;//городская больница №3 г. Рыбинска                               
-	static int GB4     = 52;//городская больница №4 г. Рыбинска                               
-	static int GDB     = 53;//"ГОРОДСКАЯ ДЕТСКАЯ БОЛЬНИЦА" г. Рыбинска                        
-	static int GP3     = 54;//"Городская поликлиника №3 им. Н.А. Семашко" г. Рыбинска         
-	static int B7      = 58;//больница №7 г. Ярославля                                        
-	static int DKB1    = 59;//детская клиническая больница №1 г. Ярославля                    
-	static int DP3     = 60;//"Детская поликлиника №3" г. Ярославля                           
-	static int DP5     = 61;//Детская поликлиника №5 г. Ярославля                             
-	static int KB8     = 64;//Клиническая больница №8 г. Ярославля                            
+	private static int KB2      = 2;//"Клиническая больница №2" г. Ярославля                +          
+	private static int KB9      = 3;//"Клиническая больница №9"                             +          
+	private static int GBSEM   = 5;//"Городская больница имени Н.А. Семашко" г. Ярославля            
+	private static int POL2     = 6;//поликлиника №2 г. Ярославля                           +          
+	private static int BOR_CRB  = 7;//Борисоглебская ЦРБ                                    +          
+	private static int DAN_CRB  = 9;//Даниловская ЦРБ                                       +          
+	private static int LUB_CRB = 10;//"Любимская ЦРБ"                                                 
+	private static int NEK_CRB = 11;//"Некрасовская ЦРБ"                                    +                                         
+	private static int PER_CRB = 12;//"Переславская ЦРБ"                                              
+	private static int ROS_CRB = 13;//"Ростовская ЦРБ"                                                
+	private static int TUT_CRB = 14;//"Тутаевская ЦРБ"                                                
+	private static int GB1     = 15;//"Городская больница №1"                                         
+	private static int GB2     = 16;//"Городская больница №2 имени Н.И. Пирогова"                     
+	private static int GB6     = 17;//"Городская больница №6"                                         
+	private static int RPB     = 18;//"Рыбинская психиатрическая больница"                            
+	private static int KB1     = 20;//"Клиническая больница №1" г. Ярославля                +             
+	private static int KB10    = 21;//"Клиническая больница №10" г. Ярославля               +          
+	private static int KB3     = 22;//"Клиническая больница №3" г. Ярославля                +          
+	private static int KB5     = 23;//"Клиническая больница №5" г. Ярославля                +          
+	private static int ODKB    = 24;//"Областная детская клиническая больница"                        
+	private static int OKOB    = 26;//"Областная клиническая онкологическая больница"                 
+	private static int OKTB    = 27;//"Областная клиническая туберкулезная больница"                  
+	private static int OKPB    = 35;//"Ярославская областная клиническая психиатрическая больница"    
+	private static int BOL_CRB = 40;//Большесельская ЦРБ                                              
+	private static int BRE_CRB = 41;//"Брейтовская ЦРБ"                                               
+	private static int GAV_CRB = 42;//Гаврилов-Ямская ЦРБ                                             
+	private static int MIS_CRB = 43;//"ЦРБ им. Д.Л. Соколова" Мышкинского МР                          
+	private static int NKZ_CRB = 44;//Некоузская ЦРБ                                                  
+	private static int BUR_RB  = 45;//"Бурмакинская районная больница №1" Некрасовского МР            
+	private static int PRE_CRB = 46;//Пречистенская ЦРБ Первомайского МР                              
+	private static int POS_CRB = 47;//Пошехонская ЦРБ                                                 
+	private static int RIB_CRP = 48;//"Рыбинская ЦРП"                                                 
+	private static int UGL_CRB = 49;//"Угличская ЦРБ"                                                 
+	private static int YAR_CRB = 50;//Ярославская ЦРБ                                                 
+	private static int GB3     = 51;//городская больница №3 г. Рыбинска                               
+	private static int GB4     = 52;//городская больница №4 г. Рыбинска                               
+	private static int GDB     = 53;//"ГОРОДСКАЯ ДЕТСКАЯ БОЛЬНИЦА" г. Рыбинска                        
+	private static int GP3     = 54;//"Городская поликлиника №3 им. Н.А. Семашко" г. Рыбинска         
+	private static int B7      = 58;//больница №7 г. Ярославля                                        
+	private static int DKB1    = 59;//детская клиническая больница №1 г. Ярославля                    
+	private static int DP3     = 60;//"Детская поликлиника №3" г. Ярославля                           
+	private static int DP5     = 61;//Детская поликлиника №5 г. Ярославля                             
+	private static int KB8     = 64;//Клиническая больница №8 г. Ярославля                            
 
     class Parser {
 		String pattern1;
@@ -143,7 +143,7 @@ public class MoParser {
 	}
 
    
-    public void run() throws IOException {
+    private void run() throws IOException {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader("MoS.txt"));
@@ -159,7 +159,7 @@ public class MoParser {
 		}
 	}
 
-	private int doParse(String line) {
+	int doParse(String line) {
 
 		String str;
 	    int res = 0;
@@ -172,7 +172,7 @@ public class MoParser {
 	    return res;  
 	}
 	
-	public String synteticNameMo(String source) {
+	private  String synteticNameMo(String source) {
 		if (source != null) {
 			source = source.toUpperCase().replace("ГОСУДАРСТВЕННОЕ", "");
 			source = source.replace("БЮДЖЕТНОЕ", "");
@@ -199,7 +199,7 @@ public class MoParser {
 		return null;
 	}
 	
-	public int parser(String str, Parser p) {
+	private int parser(String str, Parser p) {
 		int id = 0;
 		Matcher m1 = null;
 		Matcher m2 = null;
