@@ -24,7 +24,6 @@ public class Snils implements Serializable {
 	private String snils;
 	@Column(name="ogrn", columnDefinition="bpchar")
 	private String ogrn;
-	private boolean auto;
 
 
 	public Snils() {
@@ -44,13 +43,6 @@ public class Snils implements Serializable {
 		this.ogrn =  ogrn;
 	}
 	
-    public boolean isAuto() {
-		return auto;
-	}
-
-	public void setAuto(boolean auto) {
-		this.auto = auto;
-	}
 
 @Override
      public String toString(){

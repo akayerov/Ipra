@@ -56,7 +56,7 @@ public class Mse implements Serializable {
 	private Date prgdate;
 
 	private boolean complete;
-	private boolean auto;
+	private boolean autoselect;
 
 	@Column(name="mseid", columnDefinition="bpchar")
 	private String mseid;
@@ -183,12 +183,12 @@ public class Mse implements Serializable {
 	}
 	
 
-	public boolean isAuto() {
-		return auto;
+	public boolean isAutoSelect() {
+		return autoselect;
 	}
 
-	public void setAuto(boolean auto) {
-		this.auto = auto;
+	public void setAutoSelect(boolean autoselect) {
+		this.autoselect = autoselect;
 	}
 
 	public String getMseid() {

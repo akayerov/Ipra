@@ -111,7 +111,7 @@ public class Program {
 			mode = MODE_LISTNOTMO;
 		if (args[0].equals("-ms")) 
 			mode = MODE_SETMSEID;
-		if (args[0].equals("-vs")) 
+		if (args[0].equals("-virtsnils")) 
 			mode = MODE_SETVSNILS;
 		if (args[0].equals("-f")) 
 			mode = MODE_СREMOFOLDER;
@@ -228,6 +228,7 @@ public class Program {
 		//
 			logger.info("Создание Zip архивов:");
 			CreateZIPs(sDirComplete,"IR", context);
+			logger.info("End!");
 		}
 		else if (mode == MODE_LISTNOTMO) {
 			logger.info("Create List IPRA not MO:");
@@ -241,6 +242,9 @@ public class Program {
 			logger.info("Создание Zip архивов:");
 			CreateZIPs(sDirComplete,"IPRA_RESULT", context);	
 			logger.info("Done");
+		}
+		else {	
+			logger.info("End List File");
 		}
 	}
 
@@ -938,20 +942,29 @@ public class Program {
 			Mo m = null;
 
 			if (!sSnils.isEmpty()) {
-				logger.info("Найден СНИЛС в файле ИПРА:" + sSnils);
+				logger.info("поле СНИЛС в файле ИПРА:" + sSnils);
 				// СНИЛС в базе есть? Если есть - тогда файла перемещаем в папку
 				// для соотвествующей организации
 				// и последующей отправки в МО
+				// + 5.12.2016 отбор по строке SenderMO
+				
 				sn = snils.getById(sSnils);
 				if (sn != null || PreviewXML.id_mo > 0) {
-					logger.info("Найден СНИЛС в базе данных:" + sSnils + " или автоматический поиск организации :" 
-				                 + Integer.toString(PreviewXML.id_mo));
-					m = mo.getByOgrn(sn.getOgrn());
+					if (sn != null) {
+						logger.info("Найден СНИЛС в базе данных:" + sSnils);
+						m = mo.getByOgrn(sn.getOgrn());
+					}
+					else {  // по строке мед организация в файле XML
+						m = mo.getById(PreviewXML.id_mo);
+						logger.info("СНИЛС в базе не найден, распределение по строке Sender_MO" 
+				                 + Integer.toString(PreviewXML.id_mo) + ":" + m.getName());
+					}
+                     
 					if (m == null) {
 						logger.error("ОГРН отсуствует в списке МО:"
 								+ sn.getOgrn());
 					} else {
-						logger.info("ОГРН:" + sn.getOgrn() + ":"
+						logger.info("ОГРН:" + m.getOgrn() + ":"
 								+ m.getName().trim());
 						String nameFolder = constructNameFolder(sDirComlete, m
 								.getName().trim());
@@ -966,7 +979,6 @@ public class Program {
 						logger.info("Перемещаем документ в папку:" + nameFolder);
 						Move(fileNameObj.fullpath, nameFolder, true);
 					}
-
 				}
 				else  { // 02/08/2016 СНИЛС в таблице не найден - все равно запись в базе создаем!! - так удобнее считать файлы выписок
 					if (!isMSE(mse, fileNameObj.namefile))
@@ -976,7 +988,7 @@ public class Program {
 						logger.info("ИПРА выписка из файла была ранее разнесена:"
 								+ fileNameObj.fullpath);
 					}	
-					logger.info("Не найден СНИЛС в таблице SNILS:" + sSnils);
+					logger.trace("Не найден СНИЛС в таблице SNILS:" + sSnils);
 					
 				}
 
@@ -1032,12 +1044,17 @@ public class Program {
 
 // update MSE - установка МО
 	private static void UpdateRecordMSE(IpraFile fileNameObj, Snils sn, Mo m,
-			MseDAO mse) {
-		Mse ms = mse.getByNameFile(fileNameObj.namefile);
+			MseDAO mseDAO) {
+		Mse mse = mseDAO.getByNameFile(fileNameObj.namefile);
 		if (m != null) {
-			ms.setIdMo(m.getId());
-			mse.update(ms.getId(), ms);
+			mse.setIdMo(m.getId());
+			if(sn == null)
+			   mse.setAutoSelect(true);
+			else
+			   mse.setAutoSelect(false);
+			mseDAO.update(mse.getId(), mse);
 		}
+		
 		
 	}
 
@@ -1148,7 +1165,7 @@ public class Program {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		   logger.info("Дата протокола:" + date);
+		    logger.trace("Дата протокола:" + date);
 			mse.setPrgdate(date);
 		} else {
 			mse.setPrgdate(null);
@@ -1171,11 +1188,10 @@ public class Program {
 		   mse.setIdMo(mo.getId());
 		else
  	       mse.setIdMo(0);
-// 01/12/2016  Установка флага auto в соотвествии с состоянием в таблице snils
-// auto = true когда принадлежность программы МО установлена автоматически по разбору тектового поля Sender_MO		
-		if(sn != null)
-		   mse.setAuto(sn.isAuto());
-		
+// 01/12/2016  Установка флага auto , если это автоматическое распределение		
+		if(sn == null && mo != null)
+		   mse.setAutoSelect(true);
+
 		mse.setDt(new Date());
 		mse.setNameFile(fileNameObj.namefile);
 
@@ -1361,7 +1377,7 @@ public class Program {
 					} else { 
 						Snils su = (Snils) context.getBean(Snils.class);
                         if(!fileNameObj.ogrn.trim().equalsIgnoreCase(sn.getOgrn().trim())) {
-            			   logger.info("Found update snils in other MIO");
+            			   logger.info("Found update snils:" + sn.getOgrn().trim() + ":" + fileNameObj.ogrn.trim());
 						   su.setSnils(s);
 						   su.setOgrn(fileNameObj.ogrn);
 						   snils.update(sn.getSnils(),su);
@@ -1373,12 +1389,11 @@ public class Program {
 
 					s = rd.getNextSnils();
 				}
+				rd.close();
+				Move(fileNameObj.fullpath, sDirComlete);
 			}
-			rd.close();
-			Move(fileNameObj.fullpath, sDirComlete);
 		} else {
 			logger.error("Error Name File:" + fileNameObj.fullpath);
-			rd.close();
 			Move(fileNameObj.fullpath, sDirError);
 
 		}

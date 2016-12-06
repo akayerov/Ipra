@@ -42,7 +42,8 @@ public class ReaderSnilsImpl implements ReaderSnils {
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-        in.close();
+        if(in != null)
+		  in.close();
 		return;
 	}
 
