@@ -52,7 +52,6 @@ public class Program {
 	private static final int MSE_SENDER_MO = 1;  // обновление поля sender_mo  в таблице MSE4
 
 	private static final int LEN_FIELD_SENDERMO = 80;  // по размеру соответствующих полей
-	private static final int LEN_FIELD_SENDERMOD = 40;
 	
 	private static final int MODE_UNKNOWN = 0;
 	public static final int MODE_SNILS = 1;
@@ -1178,7 +1177,10 @@ public class Program {
 		}
 		Element MSSENDERMO = (Element) root.getElementsByTagName("SenderMedOrgName").item(0);
 		if (MSSENDERMO != null) {
-			mse.setSender_mo(MSSENDERMO.getTextContent());
+			String s = MSSENDERMO.getTextContent();
+			int pos = s.length() - LEN_FIELD_SENDERMO;
+			if( pos > 0) s = s.substring(pos);
+			mse.setSender_mo(s);
 		} else {
 			mse.setSender_mo("");
 		}
