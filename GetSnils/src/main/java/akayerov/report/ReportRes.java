@@ -46,7 +46,7 @@ public class ReportRes {
 //				e.printStackTrace();   эти исключения встечаются, пока не знаю почему, поскольку при этом работает
 			}
 
-    		System.out.println(mse.getLname() + " " + mse.getFname() + mse.getSname() + mse.getIdMo());
+//    		System.out.println(mse.getLname() + " " + mse.getFname() + mse.getSname() + mse.getIdMo());
     	}
     	close_file();
     }
@@ -69,7 +69,7 @@ public class ReportRes {
         return 1;
 	}
 
-	private static int create_file(String dirDestinationComlete) {
+	private static int create_file(String dirDestinationComplete) {
 		String pref = "IPRA_RESULT";
         int rc = 1;
 		
@@ -84,7 +84,7 @@ public class ReportRes {
 			smonth = "" + month;
 
 		try {
-			fileOutputStream = new FileOutputStream(dirDestinationComlete + File.separatorChar + pref + "_" + (year - 2000) + smonth
+			fileOutputStream = new FileOutputStream(dirDestinationComplete + File.separatorChar + pref + "_" + (year - 2000) + smonth
 					+ ".txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

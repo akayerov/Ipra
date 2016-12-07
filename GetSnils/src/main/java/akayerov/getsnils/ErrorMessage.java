@@ -28,7 +28,7 @@ public class ErrorMessage {
 			this.fileName = fileName.substring(0,pos_end) + ".err";
 	};
 	
-	void setDirDestination(String dir) {
+	public void setDirDestination(String dir) {
 		this.dirDestination = dir;
 	}
 

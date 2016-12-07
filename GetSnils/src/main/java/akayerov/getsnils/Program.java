@@ -331,7 +331,7 @@ public class Program {
 	 * resultIpraFunction - обработка результатов ИПРА
 	 */
 	private static void resultIpraFunction(IpraFile fileNameObj, MoDAO mo,
-			String sDirComlete, String sDirError, SnilsDAO snils,
+			String sDirComplete, String sDirError, SnilsDAO snils,
 			PrgDAO prgDAO, Prg_rhbDAO prg_rhb) {
 		Mo m = null;
 
@@ -350,25 +350,28 @@ public class Program {
 				logger.debug("Мо определена:" + m.getName());
 				ErrorMessage err = new ErrorMessage(m, fileNameObj.namefile);
 
-				String dirDestinationComlete = constructNameFolder(sDirComlete, m
+				String dirDestinationComlpete = constructNameFolder(sDirComplete, m
 						.getName().trim());
-				CreateFolder(dirDestinationComlete);
+				CreateFolder(dirDestinationComlpete);
 
 				
 				if (ParseFieldPrg(err, fileNameObj, prgDAO, prg_rhb, m).lerror
 						.size() == 0) {
 					logger.info("Успешный разбор XML файла:"
 							+ fileNameObj.ogrn);
-					Move(fileNameObj.fullpath, dirDestinationComlete, true);
+					Move(fileNameObj.fullpath, dirDestinationComlpete, true);
 				} else {
 					logger.info("Обнаружены ошибки:" + fileNameObj.namefile);
 					String dirDestinationError = constructNameFolder(sDirError, m
 							.getName().trim());
-					err.setDirDestination(dirDestinationError);
-					CreateFolder(dirDestinationError);
+			//		err.setDirDestination(dirDestinationError);
+			//		CreateFolder(dirDestinationError);
+					err.setDirDestination(dirDestinationComlpete);
+					CreateFolder(dirDestinationComlpete);
 
 					err.print();
-					Move(fileNameObj.fullpath, dirDestinationError, true);
+			//		Move(fileNameObj.fullpath, dirDestinationError, true);
+					Move(fileNameObj.fullpath, dirDestinationComlpete, true);
 				}
 			}
 		} else { // плохое имя файла
@@ -593,7 +596,7 @@ public class Program {
 				prg.setMseid(mseid.getTextContent().toLowerCase());
 			} else {
 				prg.setMseid("");
-				// num_err++; Сейчас я не буду считать это ошибкой!!!
+				err.add("MSEID"); //Уже не так --- Сейчас я не буду считать это ошибкой!!!
 				// - слишком жестоко и неправильно требовать заполнения с
 				// пользователей!
 			}
@@ -1259,7 +1262,6 @@ public class Program {
 		IpraFile fileNameObj = folder.getNextDir();
 
 		while (fileNameObj != null) {
-			logger.info("Folder MO:" + fileNameObj.fullpath);
 			CreateZIP(fileNameObj.fullpath, pref);
 			fileNameObj = folder.getNextDir();
 		}
@@ -1281,6 +1283,7 @@ public class Program {
 
 	private static void CreateZIP(String sDirComplete, String pref) {
         if( !smartFolder || SmartFolder.isFolder(sDirComplete)) {
+			logger.info("Folder MO:" + sDirComplete);
 			File directory = new File(sDirComplete);
 			java.util.Calendar calendar = java.util.Calendar.getInstance(
 					java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
