@@ -120,11 +120,11 @@ public class MoParser {
     	  new Parser("НЕКОУЗ","БОЛЬНИЦА","", NKZ_CRB),   
     	  new Parser("ГБ","№1","РЫБИНСК", GB1),   
     	  new Parser("СОКОЛОВ","БОЛЬНИЦ","", MIS_CRB ),   
-    	  new Parser("ГОРОДСКАЯ","СЕМАШКО","", GB3),   
+    	  new Parser("ГОРОДСКАЯ","СЕМАШКО","", GP3),   
     	  new Parser("ОНКОЛОГИ","БОЛЬНИЦ","", OKOB),   
     	  new Parser("БРЕЙТОВ","БОЛЬНИЦ","", BRE_CRB),   
-    	  new Parser("СЕМАШКО","РЫБИНСК","", GB3),   
-    	  new Parser("СЕМАШКО","3","", GB3),   
+    	  new Parser("СЕМАШКО","РЫБИНСК","", GP3),   
+    	  new Parser("СЕМАШКО","3","", GP3),   
     	  new Parser("ГБ","№1","", GB1)
     	};   
     

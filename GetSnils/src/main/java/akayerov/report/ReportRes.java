@@ -62,6 +62,8 @@ public class ReportRes {
 		try {
 			bufferedWriter.write(mo.getName());
 			bufferedWriter.newLine();
+			bufferedWriter.write("СНИЛС:ФАМИЛИЯ:ИМЯ:ОТЧЕСТВО:ДАТА РОЖДЕНИЯ:ДАТА ИПРА:ЗАВЕРШЕНО/НЕ ЗАВЕРШЕНО");
+			bufferedWriter.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

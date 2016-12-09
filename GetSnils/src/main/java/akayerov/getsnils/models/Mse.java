@@ -106,15 +106,16 @@ public class Mse implements Serializable {
 	}
 
 
-
+/*
 	public Integer getMo() {
 		return this.idMo;
 	}
-
+*/	
+/*
 	public void setPrg(Integer mo) {
 		this.idMo = mo;
 	}
-
+*/
 
 	public String getSname() {
 		return this.sname;
@@ -133,7 +134,7 @@ public class Mse implements Serializable {
 	}
 
 	public Integer getIdMo() {
-		return idMo;
+		return this.idMo;
 	}
 
 	public void setIdMo(Integer idMo) {

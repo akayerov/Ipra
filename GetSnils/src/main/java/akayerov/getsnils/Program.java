@@ -51,7 +51,12 @@ public class Program {
 	private static final int MSE_UPDATE_ID = 0;  // обновление поля id  в таблице MSE4
 	private static final int MSE_SENDER_MO = 1;  // обновление поля sender_mo  в таблице MSE4
 
-	private static final int LEN_FIELD_SENDERMO = 80;  // по размеру соответствующих полей
+	private static final int LEN_FIELD_SENDERMO = 80;// по размеру соответствующих полей
+
+	// режимы сброса распределения ИПРА в нераспределенные
+	public static final int FREE_BY_SNILS     = 1;  // по коду SNILS с его удалением из таблицы СНИЛС
+	public static final int FREE_BY_NAMEFILE =  2;  // по имени файла ИПРА без использования таблицы SNILS
+													
 	
 	private static final int MODE_UNKNOWN = 0;
 	public static final int MODE_SNILS = 1;
@@ -64,13 +69,15 @@ public class Program {
 	public static final int MODE_EXTRACTZIP = 8;
 	private static final int MODE_TESTDIR = 9;
 	private static final int MODE_IPRAFORCE = 10;
+	private static final int MODE_MAKE_FREE_IPRA_FOR_SNILS = 11;
+	private static final int MODE_MAKE_FREE_IPRA_FOR_FILE  = 12;
 	private static int mode;
 	private static boolean smartFolder = false;     // c версии 1.3 = true - контролирует изменения целевых папок для "умной" рассылки
 	                                                // изменений по МО - + стат класс SmartFolder
 
 	public static void main(String[] args) {
 
-		if (args.length != 2) {
+		if (args.length != 2 && args.length != 3) {
 			logger.error("Usage: java  -jar ipra -<svrlf> <directory with worked file>");
 			logger.error("                       -s work with SNILS set default folder SNILS)");
 			logger.error("                       -v work with XML files from MSE (set default folder FROM_MSE)");
@@ -85,6 +92,7 @@ public class Program {
 			logger.error("                          exec after add new MO");
 			logger.error("                       -e extract from zip)");
 			logger.error("                       -t test / compare MSE file ");
+			logger.error("                       -mkfree <MSE_Folder> <file Snils for free");
 			logger.error("                       -force find MO by field <SenderMedOrgName> in XML MSE");
 			return;
 		}
@@ -120,6 +128,10 @@ public class Program {
 			mode = MODE_TESTDIR;
 		if (args[0].equals("-force")) 
 			mode = MODE_IPRAFORCE;
+		if (args[0].equals("-mkfrees")) 
+			mode = MODE_MAKE_FREE_IPRA_FOR_SNILS;
+		if (args[0].equals("-mkfreef")) 
+			mode = MODE_MAKE_FREE_IPRA_FOR_FILE;
 		
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
@@ -183,6 +195,16 @@ public class Program {
 		}
 		else if( mode == MODE_SETVSNILS) {
 			VirtSnils.run(mse);
+			logger.info("Done");
+			return;
+		}
+		else if( mode == MODE_MAKE_FREE_IPRA_FOR_SNILS) {
+			FreeSnils.run(FREE_BY_SNILS,mse,args[1],args[2], snilsDAO, moDAO, context);
+			logger.info("Done");
+			return;
+		}
+		else if( mode == MODE_MAKE_FREE_IPRA_FOR_FILE) {
+			FreeSnils.run(FREE_BY_NAMEFILE,mse,args[1],args[2], snilsDAO, moDAO, context);
 			logger.info("Done");
 			return;
 		}
@@ -1386,6 +1408,7 @@ public class Program {
 						   su.setSnils(s);
 						   su.setOgrn(fileNameObj.ogrn);
 						   snils.update(sn.getSnils(),su);
+						   
                         }   
                         
 						oldSnils++;
@@ -1407,11 +1430,11 @@ public class Program {
 
 	}
 
-	public static void Move(String fullpath, String sDirDistination) {
+	public static void Move(String fullpath, String sDirDestination) {
         if( smartFolder )
-        	SmartFolder.add(sDirDistination);
+        	SmartFolder.add(sDirDestination);
 		Path movefrom = FileSystems.getDefault().getPath(fullpath);
-		Path target_dir = FileSystems.getDefault().getPath(sDirDistination);
+		Path target_dir = FileSystems.getDefault().getPath(sDirDestination);
 		try {
 			Files.move(movefrom, target_dir.resolve(movefrom.getFileName()),
 					StandardCopyOption.REPLACE_EXISTING);
