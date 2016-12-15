@@ -71,6 +71,7 @@ public class Program {
 	private static final int MODE_IPRAFORCE = 10;
 	private static final int MODE_MAKE_FREE_IPRA_FOR_SNILS = 11;
 	private static final int MODE_MAKE_FREE_IPRA_FOR_FILE  = 12;
+	private static final int MODE_TEST_SCANER  = 13;                // иссследовать проблемы с кодировкой UTF-8 и ANSY Входящих
 	private static int mode;
 	private static boolean smartFolder = false;     // c версии 1.3 = true - контролирует изменения целевых папок для "умной" рассылки
 	                                                // изменений по МО - + стат класс SmartFolder
@@ -132,16 +133,13 @@ public class Program {
 			mode = MODE_MAKE_FREE_IPRA_FOR_SNILS;
 		if (args[0].equals("-mkfreef")) 
 			mode = MODE_MAKE_FREE_IPRA_FOR_FILE;
+		if (args[0].equals("-testscaner")) 
+			mode = MODE_TEST_SCANER;
 		
 		if (mode == MODE_UNKNOWN) {
 			logger.error("Usage: java  -jar ipra -<svr> <directory with worked file>");
 			return;
 
-		}
-		File dirSrc = new File(args[1]);
-		if (!(dirSrc.exists() && dirSrc.isDirectory())) {
-			logger.info("Not found folder:" + dirSrc);
-			return;
 		}
 
 		ApplicationContext context = new ClassPathXmlApplicationContext(
@@ -159,6 +157,19 @@ public class Program {
 		FolderIpra folder = (FolderIpra) context.getBean("folder");
 		IpraListNotMo listNotMo = (IpraListNotMo) context.getBean("listNotMo");
 
+		if( mode == MODE_TEST_SCANER) {
+			TestScaner.run(mode,  mse, snilsDAO, moDAO, context);
+			logger.info("Done");
+			return;
+		}
+
+		
+		
+		File dirSrc = new File(args[1]);
+		if (!(dirSrc.exists() && dirSrc.isDirectory())) {
+			logger.info("Not found folder:" + dirSrc);
+			return;
+		}
 		String sDirComplete = args[1] + "\\" + DIR_COMLETE;
 		File dirComplete = new File(sDirComplete);
 		if (dirComplete.exists() && dirComplete.isDirectory()) {
@@ -679,7 +690,7 @@ public class Program {
 
 					evntid = (Element) root.getElementsByTagName("EvntId")
 							.item(i);
-					if (typeid != null) {
+					if (evntid != null) {
 						try {
 							prg_rhb.setEvntid(Integer.parseInt(evntid
 									.getTextContent()));

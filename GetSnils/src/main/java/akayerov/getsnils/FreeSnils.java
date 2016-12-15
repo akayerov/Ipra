@@ -21,11 +21,12 @@ public class FreeSnils {
 	public static void run(int mode, MseDAO mse, String sDirComplete, String namefile, SnilsDAO snilsDAO, MoDAO moDAO, BeanFactory context) {
 		// TODO Auto-generated method stub
 		Scanner in = null;
+		int idx = 0;
 		int count = 0;
 		int success = 0;
 		logger.info("Workfile is:" + namefile);
 		try {
-			in = new Scanner(new File(namefile));   /* передаем только в ANSY кодировке!!! Иначе поиск не будет работать */
+			in = new Scanner(new File(namefile),"UTF-8");   /* передаем только в ANSY кодировке!!! Иначе поиск не будет работать */
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -34,12 +35,15 @@ public class FreeSnils {
 			String strin;
 			while (in.hasNextLine()) {
 			  strin = in.nextLine();
+			  if(idx==0)
+				  strin = CodePage.run(strin); 
               if(!strin.equals("")) {
           		  logger.info("DataIn:" + strin);
           		  if(proc_freeSnils(mode,mse,sDirComplete,strin,snilsDAO,moDAO,context))
           			 success++;
                   count++;
               }	  
+              idx++;
 			}	  
         }
 
