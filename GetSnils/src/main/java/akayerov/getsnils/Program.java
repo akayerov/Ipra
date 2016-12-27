@@ -50,6 +50,7 @@ public class Program {
 
 	private static final int MSE_UPDATE_ID = 0;  // обновление поля id  в таблице MSE4
 	private static final int MSE_SENDER_MO = 1;  // обновление поля sender_mo  в таблице MSE4
+	private static final int MSE_ENDDATE   = 3;  // обновление поля enddate в таблице MSE4
 
 	private static final int LEN_FIELD_SENDERMO = 80;// по размеру соответствующих полей
 
@@ -72,13 +73,14 @@ public class Program {
 	private static final int MODE_MAKE_FREE_IPRA_FOR_SNILS = 11;
 	private static final int MODE_MAKE_FREE_IPRA_FOR_FILE  = 12;
 	private static final int MODE_TEST_SCANER  = 13;                // иссследовать проблемы с кодировкой UTF-8 и ANSY Входящих
+	private static final int MODE_ENDDATE = 14;                     // установить поле enddate 
 	private static int mode;
 	private static boolean smartFolder = false;     // c версии 1.3 = true - контролирует изменения целевых папок для "умной" рассылки
 	                                                // изменений по МО - + стат класс SmartFolder
 
 	public static void main(String[] args) {
 
-		if (args.length != 2 && args.length != 3) {
+		if (args.length != 2 && args.length != 3 && args.length != 4) {
 			logger.error("Usage: java  -jar ipra -<svrlf> <directory with worked file>");
 			logger.error("                       -s work with SNILS set default folder SNILS)");
 			logger.error("                       -v work with XML files from MSE (set default folder FROM_MSE)");
@@ -129,6 +131,8 @@ public class Program {
 			mode = MODE_TESTDIR;
 		if (args[0].equals("-force")) 
 			mode = MODE_IPRAFORCE;
+		if (args[0].equals("-setenddate")) 
+			mode = MODE_ENDDATE;
 		if (args[0].equals("-mkfrees")) 
 			mode = MODE_MAKE_FREE_IPRA_FOR_SNILS;
 		if (args[0].equals("-mkfreef")) 
@@ -194,11 +198,17 @@ public class Program {
 			logger.info("Done");
 			return;
 		}
+		if( mode == MODE_ENDDATE) {
+			setMSEdata(MSE_ENDDATE, args[1], mse);
+			logger.info("Done");
+			return;
+		}
 		else if( mode == MODE_IPRAFORCE) {
 			setMSEdata(MSE_SENDER_MO, args[1], mse);
 			logger.info("Done");
 			return;
 		}
+
 		else if( mode == MODE_TESTDIR) {
 			TestBaseIpra.start(args[1], mse, moDAO);
 			logger.info("Done");
@@ -210,12 +220,12 @@ public class Program {
 			return;
 		}
 		else if( mode == MODE_MAKE_FREE_IPRA_FOR_SNILS) {
-			FreeSnils.run(FREE_BY_SNILS,mse,args[1],args[2], snilsDAO, moDAO, context);
+			FreeSnils.run(FREE_BY_SNILS,mse,args[1],args[2], args[3], snilsDAO, moDAO, context);
 			logger.info("Done");
 			return;
 		}
 		else if( mode == MODE_MAKE_FREE_IPRA_FOR_FILE) {
-			FreeSnils.run(FREE_BY_NAMEFILE,mse,args[1],args[2], snilsDAO, moDAO, context);
+			FreeSnils.run(FREE_BY_NAMEFILE,mse,args[1],args[2], args[3], snilsDAO, moDAO, context);
 			logger.info("Done");
 			return;
 		}
@@ -345,6 +355,26 @@ public class Program {
 	            					} else {
 	                                    System.out.println("SenderMO = NOT FOUND");
 	            					}
+                                }	
+                                else if( mode == MSE_ENDDATE) {
+                            		Element ENDDATE = (Element) root.getElementsByTagName("EndDate").item(0);
+                            		// 26/12/2016 дата окончания
+                    				if (ENDDATE != null) {
+                    					String s1 = ENDDATE.getTextContent();
+                    					Date date = null;
+                    					try {
+                    						date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+                    								.parse(s1);
+                    					} catch (ParseException e) {
+                    						// TODO Auto-generated catch block
+                    						e.printStackTrace();
+                    					}
+                    				    logger.trace("Дата окончания:" + date);
+                                        if(mse != null) { 
+                                          mse.setEnddate(date);
+  	            						  mseDAO.update(mse.getId(),mse);
+                                        }  
+                    				}
                                 }	
                                 
             			 }
@@ -1205,6 +1235,24 @@ public class Program {
 		} else {
 			mse.setPrgdate(null);
 		}
+		Element ENDDATE = (Element) root.getElementsByTagName("EndDate").item(0);
+// 26/12/2016 дата окончания
+		if (ENDDATE != null) {
+			String s = ENDDATE.getTextContent();
+			Date date = null;
+			try {
+				date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+						.parse(s);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    logger.trace("Дата окончания:" + date);
+			mse.setEnddate(date);
+		} else {
+			mse.setEnddate(null);
+		}
+		
 		Element MSEID = (Element) root.getElementsByTagName("Id").item(0);
 		if (MSEID != null) {
 			mse.setMseid(MSEID.getTextContent().toLowerCase());

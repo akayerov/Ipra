@@ -18,12 +18,13 @@ import akayerov.getsnils.models.Snils;
 public class FreeSnils {
 	private static final Logger logger = Logger.getLogger(Program.class);
 
-	public static void run(int mode, MseDAO mse, String sDirComplete, String namefile, SnilsDAO snilsDAO, MoDAO moDAO, BeanFactory context) {
+	public static void run(int mode, MseDAO mse, String sDirComplete, String namefile, String sMoId, SnilsDAO snilsDAO, MoDAO moDAO, BeanFactory context) {
 		// TODO Auto-generated method stub
 		Scanner in = null;
 		int idx = 0;
 		int count = 0;
 		int success = 0;
+		int srcMoId = Integer.parseInt(sMoId);
 		logger.info("Workfile is:" + namefile);
 		try {
 			in = new Scanner(new File(namefile),"UTF-8");   /* передаем только в ANSY кодировке!!! Иначе поиск не будет работать */
@@ -39,7 +40,7 @@ public class FreeSnils {
 				  strin = CodePage.run(strin); 
               if(!strin.equals("")) {
           		  logger.info("DataIn:" + strin);
-          		  if(proc_freeSnils(mode,mse,sDirComplete,strin,snilsDAO,moDAO,context))
+          		  if(proc_freeSnils(mode,mse,sDirComplete,strin,snilsDAO,moDAO,context, srcMoId))
           			 success++;
                   count++;
               }	  
@@ -56,7 +57,7 @@ public class FreeSnils {
   	}
 
 	private static boolean proc_freeSnils(int mode, MseDAO mseDAO, String sDirDestination,
-			String ssnils, SnilsDAO snilsDAO, MoDAO moDAO, BeanFactory context) {
+			String ssnils, SnilsDAO snilsDAO, MoDAO moDAO, BeanFactory context, int srcMoId) {
       
 		Snils sn = null;
 		Mse mse = null;
@@ -88,8 +89,8 @@ public class FreeSnils {
         }
 
         mo = moDAO.getByOgrn(ogrn);
-        if( mo == null) {
-            logger.info("mo not found");
+        if( mo == null || mo.getId() != srcMoId ) {
+            logger.info("Mo not found or Mo is not correct");
     		return false;		
         }	
         

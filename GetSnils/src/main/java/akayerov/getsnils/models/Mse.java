@@ -61,8 +61,19 @@ public class Mse implements Serializable {
 	@Column(name="mseid", columnDefinition="bpchar")
 	private String mseid;
 
+	@Temporal(TemporalType.DATE)
+	private Date enddate;
 
 	public Mse() {
+	}
+
+
+	public Date getEnddate() {
+		return enddate;
+	}
+
+	public void setEnddate(Date enddate) {
+		this.enddate = enddate;
 	}
 
 	public Integer getId() {
