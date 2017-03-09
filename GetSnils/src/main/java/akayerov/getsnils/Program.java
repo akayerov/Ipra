@@ -49,6 +49,7 @@ public class Program {
 	private static final String DIR_FAIL = "Неудача";
 
 	private static final int MSE_UPDATE_ID = 0;  // обновление поля id  в таблице MSE4
+// 09/03/2017 + обновление поля ОГРН
 	private static final int MSE_SENDER_MO = 1;  // обновление поля sender_mo  в таблице MSE4
 	private static final int MSE_ENDDATE   = 3;  // обновление поля enddate в таблице MSE4
 
@@ -354,6 +355,31 @@ public class Program {
                                         }  
 	            					} else {
 	                                    System.out.println("SenderMO = NOT FOUND");
+	            					}    
+	            					Element MSSENDERMO2 = (Element) root.getElementsByTagName("SentOrgName").item(0);
+	            					if (MSSENDERMO2 != null) {
+	            						String ss =  MSSENDERMO.getTextContent();
+	            						if( ss.length() > LEN_FIELD_SENDERMO){
+    	            						ss = ss.substring(0,LEN_FIELD_SENDERMO-1);
+                                        }
+                                        if(mse != null) { 
+	                                      if( ss.length() > 0) {
+	                                          mse.setSender_mo(ss);
+		            						  mseDAO.update(mse.getId(),mse);
+	                                      }	  
+                                        }  
+	            					} else {
+	                                    System.out.println("SenderMO2017 = NOT FOUND");
+	            					}
+	            					Element MSEOGRN = (Element) root.getElementsByTagName("SentOrgOgrn").item(0);
+	            					if (MSEOGRN != null) {
+	            						String ss =  MSEOGRN.getTextContent();
+                                        if(mse != null) { 
+	                                      mse.setOgrn(ss);
+	            						  mseDAO.update(mse.getId(),mse);
+                                        }  
+	            					} else {
+	                                    System.out.println("SenderMO2017 OGRN = NOT FOUND");
 	            					}
                                 }	
                                 else if( mode == MSE_ENDDATE) {
@@ -987,14 +1013,15 @@ public class Program {
 			try {
                 // Эту надо отключить позднее после проверки  pleload делает аналогично
 				sSnils = getSnils(fileNameObj.fullpath, fileNameObj.namefile, mse);
-				// 02/12/2026 Для получения id организации по строке Sender... в исходном XML документе
-				preloadXML(fileNameObj.fullpath, fileNameObj.namefile, mse); 
+				// 02/12/2026 Для получения id организации по строке SenderMedOrgnName в исходном XML документе
+				// 09/03/2017 Для получения id организации по строке SentOrgOgrn (c 01/2017).
+				preloadXML(fileNameObj.fullpath, fileNameObj.namefile, mse, mo); 
 				// тестирование совпадений для проверки preloadXML
-				if( !sSnils.equals(PreviewXML.snils)) {
-					 System.out.println("Error sSnils=" + sSnils + "  PreviewXML.snils=" + PreviewXML.snils);
-				     Error ref = new Error(); // создаем экземпляр
-				     throw ref; 
-				}
+	//			if( !sSnils.equals(PreviewXML.snils)) {
+	//				 System.out.println("Error sSnils=" + sSnils + "  PreviewXML.snils=" + PreviewXML.snils);
+	//			     Error ref = new Error(); // создаем экземпляр
+	//			     throw ref; 
+	//			}
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
@@ -1073,15 +1100,28 @@ public class Program {
 
 	}
 
-	private static void preloadXML(String fullpath, String namefile, MseDAO mse) throws ParserConfigurationException, SAXException, IOException {
+	private static void preloadXML(String fullpath, String namefile, MseDAO mse, MoDAO mo) throws ParserConfigurationException, SAXException, IOException {
 		File f = new File(fullpath);
 		MoParser mp = new MoParser();
-		PreviewXML.id_mo = 0;					
+		PreviewXML.id_mo = 0;
+		PreviewXML.snils = "";
+		Mo m = null;
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(f);
 		Element root = document.getDocumentElement();
+//  c 2017 основной механизм ОГРН в ИПРА файле
+		Element MSSENDERMO2 = (Element) root.getElementsByTagName("SentOrgName").item(0);
+		if (MSSENDERMO2 != null) {
+			String ogrn =  MSSENDERMO2.getTextContent();
+			m = mo.getByOgrn(ogrn);
+			if( m !=  null) {
+			  PreviewXML.id_mo = m.getId();
+  			  System.out.println("preloadXML: found by ogrn: " + m.getName());
+  			  return;
+			}  
+		} 
 
 		Element SNILS = (Element) root.getElementsByTagName("SNILS").item(0);
 		if (SNILS != null) {
@@ -1102,7 +1142,7 @@ public class Program {
             }
 			PreviewXML.id_mo = mp.doParse(ss);					
 		} 
-		System.out.println("preloadXML: snils="  + PreviewXML.snils + " id_mo=" + Integer.toString(PreviewXML.id_mo) );
+//		System.out.println("preloadXML: snils="  + PreviewXML.snils + " id_mo=" + Integer.toString(PreviewXML.id_mo) );
 		
 	}
 
@@ -1259,6 +1299,7 @@ public class Program {
 		} else {
 			mse.setMseid("");
 		}
+// В программах до 2017 года
 		Element MSSENDERMO = (Element) root.getElementsByTagName("SenderMedOrgName").item(0);
 		if (MSSENDERMO != null) {
 			String s = MSSENDERMO.getTextContent();
@@ -1268,7 +1309,24 @@ public class Program {
 		} else {
 			mse.setSender_mo("");
 		}
-
+// В программах с 2017 года
+		Element MSSENDERMO2 = (Element) root.getElementsByTagName("SentOrgName").item(0);
+		if (MSSENDERMO2 != null) {
+			String s = MSSENDERMO2.getTextContent();
+			int pos = s.length() - LEN_FIELD_SENDERMO;
+			if( pos > 0) s = s.substring(pos);
+			mse.setSender_mo(s);
+		} else {
+			mse.setSender_mo("");
+		}
+		Element SOGRN = (Element) root.getElementsByTagName("SentOrgOgrn")
+				.item(0);
+		if (SOGRN != null) {
+			mse.setOgrn(SOGRN.getTextContent());
+		} else {
+			mse.setOgrn("");
+		}
+// --- 2017
 		
 		if(mo != null)
 		   mse.setIdMo(mo.getId());

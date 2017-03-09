@@ -63,6 +63,7 @@ public class MseDAOImpl implements MseDAO {
         p.setSender_mo(s.getSender_mo());
         p.setAutoSelect(s.isAutoSelect());
         p.setEnddate(s.getEnddate());
+        p.setOgrn(s.getOgrn());
         em.flush();
 	}
 

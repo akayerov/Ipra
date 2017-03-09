@@ -64,6 +64,9 @@ public class Mse implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date enddate;
 
+	@Column(name="ogrn", columnDefinition="bpchar")
+	private String ogrn;
+
 	public Mse() {
 	}
 
@@ -210,6 +213,16 @@ public class Mse implements Serializable {
 	public void setMseid(String mseid) {
 		this.mseid = mseid;
 	}
+
+	public String getOgrn() {
+		return ogrn;
+	}
+
+
+	public void setOgrn(String ogrn) {
+		this.ogrn = ogrn;
+	}
+
 
 	@Override
      public String toString(){
