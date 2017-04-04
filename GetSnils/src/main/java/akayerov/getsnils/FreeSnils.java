@@ -68,7 +68,7 @@ public class FreeSnils {
 		if( mode == Program.FREE_BY_SNILS) {
 			sn = snilsDAO.findBySnils(ssnils);
 	        if( sn == null) {
-	            logger.info("snils not found");
+	            logger.info("snils:" + ssnils + " not found");
 	    		return false;		
 	        }	
 	     	logger.info("found snils:" + sn.getSnils() + " ogrn:" + sn.getOgrn());

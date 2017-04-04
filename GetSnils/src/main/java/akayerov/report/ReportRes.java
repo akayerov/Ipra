@@ -37,9 +37,9 @@ public class ReportRes {
     			
     		}
 			try {
-				bufferedWriter.write(mse.getSnils() +  ";" + mse.getLname() + ";" + mse.getFname() + ";"
+				bufferedWriter.write(mse.getMseid() + ";" +  mse.getSnils() +  ";" + mse.getLname() + ";" + mse.getFname() + ";"
 						+ mse.getSname() + ";" + mse.getBdate() + ";"
-						 + mse.getPrgdate() + ";" + mse.isComplete());
+						 + mse.getPrgdate() + ";" + mse.getEnddate() + ";" + mse.isComplete());
 				bufferedWriter.newLine();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -62,7 +62,7 @@ public class ReportRes {
 		try {
 			bufferedWriter.write(mo.getName());
 			bufferedWriter.newLine();
-			bufferedWriter.write("СНИЛС;ФАМИЛИЯ;ИМЯ;ОТЧЕСТВО;ДАТА РОЖДЕНИЯ;ДАТА ИПРА;ЗАВЕРШЕНО/НЕ ЗАВЕРШЕНО");
+			bufferedWriter.write("MSEID;СНИЛС;ФАМИЛИЯ;ИМЯ;ОТЧЕСТВО;ДАТА РОЖДЕНИЯ;ДАТА ИПРА;ДАТА ЗАВЕШЕНИЯ ИПРА;ЗАВЕРШЕНО/НЕ ЗАВЕРШЕНО");
 			bufferedWriter.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

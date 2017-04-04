@@ -96,7 +96,7 @@ public class Program {
 			logger.error("                          exec after add new MO");
 			logger.error("                       -e extract from zip)");
 			logger.error("                       -t test / compare MSE file ");
-			logger.error("                       -mkfree <MSE_Folder> <file Snils for free");
+			logger.error("                       -mkfree <MSE_Folder> <file Snils for free><idMo>");
 			logger.error("                       -force find MO by field <SenderMedOrgName> in XML MSE");
 			return;
 		}
