@@ -1046,9 +1046,9 @@ public class Program {
 						logger.info("Найден СНИЛС в базе данных:" + sSnils);
 						m = mo.getByOgrn(sn.getOgrn());
 					}
-					else {  // по строке мед организация в файле XML
+					else {  // по строке мед организация в файле XML или по ОГРН в XML
 						m = mo.getById(PreviewXML.id_mo);
-						logger.info("СНИЛС в базе не найден, распределение по строке Sender_MO" 
+						logger.info("СНИЛС в базе не найден, распределение ОГРН или по строке Sender_MO" 
 				                 + Integer.toString(PreviewXML.id_mo) + ":" + m.getName());
 					}
                      
@@ -1112,7 +1112,7 @@ public class Program {
 		Document document = builder.parse(f);
 		Element root = document.getDocumentElement();
 //  c 2017 основной механизм ОГРН в ИПРА файле
-		Element MSSENDERMO2 = (Element) root.getElementsByTagName("SentOrgName").item(0);
+		Element MSSENDERMO2 = (Element) root.getElementsByTagName("SentOrgOgrn").item(0);
 		if (MSSENDERMO2 != null) {
 			String ogrn =  MSSENDERMO2.getTextContent();
 			m = mo.getByOgrn(ogrn);
