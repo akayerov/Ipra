@@ -786,6 +786,9 @@ public class Program {
 					if (name != null) {
 						try {
 							String s = name.getTextContent();
+							int len = s.length();
+							if( len > 128) len = 128;
+							s = s.substring(0, len);
 							if (!s.equals("")) {
 								prg_rhb.setName(s);
 							}
