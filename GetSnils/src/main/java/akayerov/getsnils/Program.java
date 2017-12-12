@@ -1139,11 +1139,13 @@ public class Program {
 	    }
 		Element MSSENDERMO = (Element) root.getElementsByTagName("SenderMedOrgName").item(0);
 		if (MSSENDERMO != null) {
+/* 12.12.2017 Отключаю механизм автоматического поиска МО по подстроке в ИПРА программе
 			String ss =  MSSENDERMO.getTextContent();
 			if( ss.length() > LEN_FIELD_SENDERMO){
 				ss = ss.substring(0,LEN_FIELD_SENDERMO-1);
             }
 			PreviewXML.id_mo = mp.doParse(ss);					
+*/
 		} 
 //		System.out.println("preloadXML: snils="  + PreviewXML.snils + " id_mo=" + Integer.toString(PreviewXML.id_mo) );
 		
